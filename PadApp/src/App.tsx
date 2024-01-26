@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-//import logo from './logo.svg';
+import logo from './logo.svg';
 import GridLayout from 'react-grid-layout'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import NoSleep from '@uriopass/nosleep.js';
