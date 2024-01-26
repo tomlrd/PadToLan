@@ -264,7 +264,7 @@ export const useKeyBindsStore = create<KeyBindsStore>()(
         keybindlist: state.keybindlist,
         lastkblist: state.lastkblist
       }),
-      onRehydrateStorage: (state) => {
+      onRehydrateStorage: (_state) => {
         /*                 if (state.keybindlist?.length === 0) {
                     state.keybindlist = DefaultKeybinds
                     state.kbselectedList = DefaultKeybinds[0]

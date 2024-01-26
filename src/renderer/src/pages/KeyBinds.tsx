@@ -17,9 +17,9 @@ function KeyBinds(): JSX.Element {
     removeKeybind
   } = useKeyBindsStore()
 
-  const handleChange = (type, _uid, k) => {
+/*   const handleChange = (type, _uid, k) => {
     updateKeybind(type, k)
-  }
+  } */
 
   const handleReset = (uid) => {
     getKeybind(uid)

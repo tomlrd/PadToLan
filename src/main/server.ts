@@ -18,7 +18,7 @@ export function createServer([layout, options]): void {
     .map((iface: any) => iface.address)
   const port = options.server.port
   const app: Express = express()
-  let connections = 0
+  //let connections = 0
   console.log(options)
   console.log(layout)
 
@@ -93,6 +93,8 @@ export function createServer([layout, options]): void {
 
   app.get('/', (_req, res) => {
     if (is.dev) {
+      console.log('dev');
+      
       res.sendFile(path.resolve('index.html'))
       return
     }

@@ -9,7 +9,7 @@ console.log(path.resolve('.', 'src/main', 'index.html'))
 console.log(path.resolve(__dirname, '../renderer/index.html'))
 let mainWindow
 let tray
-let minimizeInNotif: boolean = false
+//let minimizeInNotif: boolean = false
 import firstRun from 'electron-first-run'
 
 const isFirstRun: any = firstRun()

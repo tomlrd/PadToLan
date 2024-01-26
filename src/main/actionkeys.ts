@@ -1,16 +1,16 @@
 import { ipcMain } from 'electron'
 const { keyboard, Key } = require('@nut-tree/nut-js')
-import activeWindow from 'active-win'
+//import activeWindow from 'active-win'
 keyboard.config.autoDelayMs = 50
 console.log(Key)
 
 // Tableau pour stocker les identifiants des intervalles
 const intervalIds: any = []
 
-ipcMain.on('action:key', async (_e, [args, block]) => {
+ipcMain.on('action:key', async (_e, [args, _block]) => {
   console.log(args)
 
-  const activeWin = await activeWindow()
+  //const activeWin = await activeWindow()
   /*     if (activeWin?.owner.name !== block && block.trim().length !== 0) {
             return
         } */
