@@ -59,7 +59,7 @@ export function createServer([layout, options]): void {
   if (is.dev) {
     console.log('yhrfytytytr');
     
-    app.use(express.static(path.resolve('.' ,'build', 'static')))
+    app.use(express.static(path.resolve('.' ,'build')))
   } else {
     app.use(express.static(path.resolve('.\\resources\\app.asar.unpacked\\resources\\')))
   }
