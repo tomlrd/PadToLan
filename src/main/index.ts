@@ -1,7 +1,7 @@
-import { app, shell, BrowserWindow, dialog, ipcMain, Tray } from 'electron'
+import { app, shell, BrowserWindow, dialog, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+
 import path from 'path'
 import { createServer } from './server'
 import './actionkeys'
@@ -22,7 +22,6 @@ function createWindow(): void {
     height: 1050,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -41,7 +40,6 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  tray = new Tray(icon)
 
   mainWindow.on('minimize', (event) => {
     event.preventDefault()

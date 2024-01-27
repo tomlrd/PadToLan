@@ -17,6 +17,8 @@ function App() {
   const [noSleepDiv, setNoSleepDiv] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log(process.env.REACT_APP_DISABLE_ESLINT_PLUGIN);
+    
     const fetchLayouts = async () => {
       try {
         const response = await fetch('/layout');

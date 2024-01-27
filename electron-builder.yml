@@ -16,7 +16,7 @@ win:
 nsis:
   artifactName: ${productName}.${version}.setup.${ext}
   shortcutName: ${productName}
-  uninstallDisplayName: ${productName}
+  uninstallDisplayName: ${productName}.uninstall.${ext}
   createDesktopShortcut: always
 npmRebuild: false
 publish:

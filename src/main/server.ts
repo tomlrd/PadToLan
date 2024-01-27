@@ -1,4 +1,5 @@
 import express, { Express } from 'express'
+import {app} from 'electron'
 /*import helmet from 'helmet'; */
 import path from 'path'
 import fs from 'fs'
@@ -17,7 +18,7 @@ export function createServer([layout, options]): void {
     .filter((iface: any) => iface.family === 'IPv4' && !iface.internal)
     .map((iface: any) => iface.address)
   const port = options.server.port
-  const app: Express = express()
+  const appE: Express = express()
   //let connections = 0
   console.log(options)
   console.log(layout)
@@ -34,12 +35,12 @@ export function createServer([layout, options]): void {
       }
     }
     const allowedIPAddresses = options.server.ipwhitelist
-    app.use(restrictIP(allowedIPAddresses))
+    appE.use(restrictIP(allowedIPAddresses))
   }
 
   /*     const maxConnections = options.server.maxConnections || 0;
 
-    app.use((_req, res, next) => {
+    appE.use((_req, res, next) => {
         if (maxConnections === 0 || connections < maxConnections) {
             connections++;
             console.log(connections);
@@ -50,7 +51,7 @@ export function createServer([layout, options]): void {
         }
     });
 
-    app.use((_req, _res, next) => {
+    appE.use((_req, _res, next) => {
         connections--;
         next();
     });
@@ -59,17 +60,17 @@ export function createServer([layout, options]): void {
   if (is.dev) {
     console.log('yhrfytytytr');
     
-    app.use(express.static(path.resolve('.' ,'build')))
+    appE.use(express.static(path.resolve('.' ,'build')))
   } else {
-    app.use(express.static(path.resolve('.\\resources\\app.asar.unpacked\\resources\\')))
+    appE.use(express.static(path.resolve(app.getAppPath(),'.\\resources\\app.asar.unpacked\\resources\\')))
   }
-  app.use((_req, res, next) => {
+  appE.use((_req, res, next) => {
     res.setHeader('Content-Type', 'application/javascript')
     //res.setHeader('Content-Security-Policy', "img-src 'self' http://localhost:3000");
     next()
   })
 
-  app.use('/images/:imageUrl', (req, res) => {
+  appE.use('/images/:imageUrl', (req, res) => {
     let imageUrl = req.originalUrl
     if (imageUrl.indexOf('/images/') === 0) {
       imageUrl = imageUrl.slice('/images/'.length)
@@ -93,7 +94,7 @@ export function createServer([layout, options]): void {
     })
   })
 
-  app.get('/', (_req, res) => {
+  appE.get('/', (_req, res) => {
     console.log('/');
     
     if (is.dev) {
@@ -105,16 +106,16 @@ export function createServer([layout, options]): void {
     res.sendFile(path.resolve('.\\resources\\app.asar.unpacked\\resources\\index.html'))
   })
 
-  app.get('/layout', (_req, res) => {
+  appE.get('/layout', (_req, res) => {
     res.json({ layout })
   })
 
-  app.get('/key/:id', (req, res) => {
+  appE.get('/key/:id', (req, res) => {
     mainWindow.webContents.send('key', [req.params.id, options])
     res.status(200).end()
   })
 
-  serverInstance = app.listen(port, () => {
+  serverInstance = appE.listen(port, () => {
     mainWindow.webContents.send('serverstatus', [localIPv4[0], port])
   })
 

@@ -17,7 +17,7 @@
     "typescript": "^4.4.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": " react-scripts start ESLINT_CONFIG_FILE=./eslintrc.cjs",
     "build": "react-scripts build"
   },
   "browserslist": {
