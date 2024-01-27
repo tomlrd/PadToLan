@@ -62,7 +62,7 @@ export function createServer([layout, options]): void {
     
     appE.use(express.static(path.resolve('.' ,'build')))
   } else {
-    appE.use(express.static(path.resolve(app.getAppPath(),'.\\resources\\app.asar.unpacked\\resources\\')))
+    appE.use(express.static(path.resolve(app.getAppPath(),'.\\PadApp')))
   }
   appE.use((_req, res, next) => {
     res.setHeader('Content-Type', 'application/javascript')
@@ -89,7 +89,7 @@ export function createServer([layout, options]): void {
           res.sendFile(path.resolve('images', imageUrl))
           return
         }
-        res.sendFile(path.resolve('.\\resources\\app.asar.unpacked\\resources\\images', imageUrl))
+        res.sendFile(path.resolve(app.getAppPath(),'.\\PadApp\\images', imageUrl))
       }
     })
   })
@@ -103,7 +103,7 @@ export function createServer([layout, options]): void {
       res.sendFile(path.resolve('index.html'))
       return
     }
-    res.sendFile(path.resolve('.\\resources\\app.asar.unpacked\\resources\\index.html'))
+    res.sendFile(path.resolve(app.getAppPath(),'.\\PadApp\\index.html'))
   })
 
   appE.get('/layout', (_req, res) => {

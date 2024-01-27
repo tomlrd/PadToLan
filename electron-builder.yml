@@ -10,13 +10,16 @@ files:
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
-  - resources/**
+  - 'resources/**'
+extraFiles:
+  - from: PadApp/build/
+    to: PadApp
 win:
   executableName: PadToLan
 nsis:
   artifactName: ${productName}.${version}.setup.${ext}
   shortcutName: ${productName}
-  uninstallDisplayName: ${productName}.uninstall.${ext}
+  uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 npmRebuild: false
 publish:

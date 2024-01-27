@@ -8,7 +8,7 @@ import './actionkeys'
 console.log(path.resolve('.', 'src/main', 'index.html'))
 console.log(path.resolve(__dirname, '../renderer/index.html'))
 let mainWindow
-let tray
+//let tray
 //let minimizeInNotif: boolean = false
 import firstRun from 'electron-first-run'
 
@@ -46,9 +46,9 @@ function createWindow(): void {
     mainWindow.webContents.send('minimizeInNotif', '')
   })
 
-  tray.on('click', () => {
+/*   tray.on('click', () => {
     mainWindow.show()
-  })
+  }) */
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
