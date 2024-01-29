@@ -33,6 +33,8 @@ function Home(): JSX.Element {
   const [layoutH, setlayoutH] = useState<number>()
 
   useEffect(() => {
+    console.log(window.api.resourcesPath);
+    
     window.electron.ipcRenderer.on('firstrun', (_e, isFirstRun) => {
       if (isFirstRun === true) {
         resetLayouts()

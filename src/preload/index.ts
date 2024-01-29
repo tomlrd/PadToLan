@@ -2,7 +2,9 @@ import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  resourcesPath: process.resourcesPath
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -11,6 +13,9 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
+    console.log(process);
+    // prod process.resourcesPath = "C:\\Users\\stylo\\AppData\\Local\\Programs\\padtolan\\resources"
+    // :) !!!
   } catch (error) {
     console.error(error)
   }

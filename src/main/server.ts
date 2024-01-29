@@ -1,5 +1,5 @@
 import express, { Express } from 'express'
-import {app} from 'electron'
+//import {app} from 'electron'
 /*import helmet from 'helmet'; */
 import path from 'path'
 import fs from 'fs'
@@ -62,7 +62,7 @@ export function createServer([layout, options]): void {
     
     appE.use(express.static(path.resolve('.' ,'build')))
   } else {
-    appE.use(express.static(path.resolve(app.getAppPath(),'.\\PadApp')))
+    appE.use(express.static(path.join(process.resourcesPath, 'PadApp')))
   }
   appE.use((_req, res, next) => {
     res.setHeader('Content-Type', 'application/javascript')
@@ -89,7 +89,8 @@ export function createServer([layout, options]): void {
           res.sendFile(path.resolve('images', imageUrl))
           return
         }
-        res.sendFile(path.resolve(app.getAppPath(),'.\\PadApp\\images', imageUrl))
+        res.sendFile(path.join(process.resourcesPath, 'PadApp', 'images', imageUrl))
+        path.join(process.resourcesPath, 'PadApp', 'images', imageUrl)
       }
     })
   })
@@ -103,7 +104,7 @@ export function createServer([layout, options]): void {
       res.sendFile(path.resolve('index.html'))
       return
     }
-    res.sendFile(path.resolve(app.getAppPath(),'.\\PadApp\\index.html'))
+    res.sendFile(path.join(process.resourcesPath, 'PadApp', 'index.html'))
   })
 
   appE.get('/layout', (_req, res) => {
