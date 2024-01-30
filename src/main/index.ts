@@ -2,11 +2,10 @@ import { app, shell, BrowserWindow, dialog, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 
-import path from 'path'
+//import path from 'path'
 import { createServer } from './server'
 import './actionkeys'
-console.log(path.resolve('.', 'src/main', 'index.html'))
-console.log(path.resolve(__dirname, '../renderer/index.html'))
+
 let mainWindow
 //let tray
 //let minimizeInNotif: boolean = false

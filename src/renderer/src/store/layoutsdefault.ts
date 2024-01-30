@@ -1,5 +1,7 @@
 import { Layout, Page, GridItem, Pos, BGRepeat, Justify } from '../types/layouts'
 
+
+
 export function generateUID() {
   const alphanumeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   let uid = ''
@@ -103,7 +105,7 @@ SM.height = 800
 SM.nosleep = true
 SM.pages[0].name = 'Ship'
 SM.pages[0].pageConfig.bgcolor = '#1a18184a'
-SM.pages[0].pageConfig.bgimg = 'D://Apps//PadToLan//build//Example//22.png'
+SM.pages[0].pageConfig.bgimg = '../../resources/planet.png'
 SM.pages[0].pageListConfig.bgcolor = '#4e454552'
 SM.pages[0].pageItemConfig.height = '35px'
 SM.pages[0].pageItemConfig.color = '#e1e7ed7a'
