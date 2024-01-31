@@ -6,6 +6,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { createServer } from './server'
 import './actionkeys'
 
+
 let mainWindow
 //let tray
 //let minimizeInNotif: boolean = false

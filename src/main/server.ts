@@ -57,9 +57,7 @@ export function createServer([layout, options]): void {
     });
  */
 
-  if (is.dev) {
-    console.log('yhrfytytytr');
-    
+  if (is.dev) {    
     appE.use(express.static(path.resolve('.' ,'build')))
   } else {
     appE.use(express.static(path.join(process.resourcesPath, 'PadApp')))
@@ -77,23 +75,19 @@ export function createServer([layout, options]): void {
     }
     fs.access(path.resolve('images', imageUrl), fs.constants.F_OK, (err) => {
       if (err) {
-        res.status(404).send('Image not found')
+        res.status(404).send(`img not found ${path.resolve(process.resourcesPath, 'PadApp', imageUrl)}`)
       } else {
         if (is.dev) {
-          console.log('______________');
-          console.log('______________');
-          console.log('______________');
-          console.log('______________');
           console.log(path.resolve('images', imageUrl));
-          
           res.sendFile(path.resolve('images', imageUrl))
           return
         }
-        res.sendFile(path.join(process.resourcesPath, 'PadApp', 'images', imageUrl))
-        path.join(process.resourcesPath, 'PadApp', 'images', imageUrl)
+        res.sendFile(path.resolve(process.resourcesPath, 'PadApp', imageUrl))
+        //path.join(process.resourcesPath, 'PadApp', 'images', imageUrl)
       }
     })
   })
+  
 
   appE.get('/', (_req, res) => {
     console.log('/');

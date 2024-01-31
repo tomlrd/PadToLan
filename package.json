@@ -2,6 +2,10 @@
   "name": "padtolan",
   "version": "0.1.0",
   "description": "Customizable Touchpad on Lan",
+  "engines": {
+    "node": ">=18.15.0"
+  },
+  "engineStrict": true,
   "main": "./out/main/index.js",
   "author": "tomlrd",
   "homepage": "https://www.electronjs.org",
