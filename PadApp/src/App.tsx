@@ -18,6 +18,7 @@ function App() {
   const [blockBtn, setBlocBtn] = useState<boolean>(true);
 
   useEffect(() => {
+    document.title = "PadToLan Remote";
     const fetchLayouts = async () => {
       try {
         const response = await fetch('/layout');

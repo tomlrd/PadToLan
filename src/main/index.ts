@@ -18,6 +18,7 @@ console.log(isFirstRun)
 function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    title:'PadToLan',
     width: 950,
     height: 1050,
     show: false,
