@@ -3,6 +3,7 @@
 PadToLan is a customizable TouchPad designed for deployment on local area networks (LAN). It provides easy access to any devices connected to the private network, offering a convenient solution for controlling multiple devices seamlessly.
 
 WORK IN PROGRESS
+<img src="https://raw.githubusercontent.com/tomlrd/PadToLan/main/scrpdl.png" alt="PadToLan screenshot" width="1200"/>
 
 ## Features
 
@@ -16,7 +17,7 @@ WORK IN PROGRESS
 
 ### Usage
 
-- Download latest release:
+- Download latest release: https://github.com/tomlrd/PadToLan/releases/latest
 
 ### Dev
 ### Prerequisites
