@@ -1,16 +1,16 @@
 import { ipcMain } from 'electron'
 const { keyboard, Key } = require('@nut-tree/nut-js')
-import activeWindow from 'active-win'
+//import activeWindow from 'active-win'
 keyboard.config.autoDelayMs = 50
 console.log(Key)
 
 // Tableau pour stocker les identifiants des intervalles
 const intervalIds: any = []
 
-ipcMain.on('action:key', async (_e, [args, block]) => {
+ipcMain.on('action:key', async (_e, [args, _block]) => {
   console.log(args)
 
-  const activeWin = await activeWindow()
+  //const activeWin = await activeWindow()
   /*     if (activeWin?.owner.name !== block && block.trim().length !== 0) {
             return
         } */
@@ -40,7 +40,7 @@ ipcMain.on('action:key', async (_e, [args, block]) => {
 
     switch (true) {
       case args.repeat === 'infinite':
-      case Number(args.repeat) > 0:
+      case Number(args.repeat) > 1:
         createInterval(keysToPress, args)
         break
       default:
@@ -140,5 +140,10 @@ function createInterval(keysToPress, args) {
   console.log('intervalIds.length', intervalIds.length)
 }
 
-// Arrêter tous les intervalles
-//intervalIds.forEach(clearInterval);
+
+export const clearAllIntervals = () => {
+  intervalIds.forEach((intervalId) => {
+    clearInterval(intervalId);
+    intervalIds.length = 0;
+  });
+};

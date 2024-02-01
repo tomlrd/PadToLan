@@ -3,7 +3,7 @@ import { Page, GridItem } from '../types/layouts'
 import { useLayoutsStore } from '../store'
 import GridLayout from 'react-grid-layout'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import path from 'path'
+//import path from 'path'
 
 function LayoutDisplay({}: {}): JSX.Element {
   const { updateItem, selectedLayout, selectedPage, selectedItem, getPage, getItem } =

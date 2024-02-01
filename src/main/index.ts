@@ -1,15 +1,15 @@
-import { app, shell, BrowserWindow, dialog, ipcMain, Tray } from 'electron'
+import { app, shell, BrowserWindow, dialog, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
-import path from 'path'
+
+//import path from 'path'
 import { createServer } from './server'
 import './actionkeys'
-console.log(path.resolve('.', 'src/main', 'index.html'))
-console.log(path.resolve(__dirname, '../renderer/index.html'))
+
+
 let mainWindow
-let tray
-let minimizeInNotif: boolean = false
+//let tray
+//let minimizeInNotif: boolean = false
 import firstRun from 'electron-first-run'
 
 const isFirstRun: any = firstRun()
@@ -22,7 +22,6 @@ function createWindow(): void {
     height: 1050,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -41,16 +40,15 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  tray = new Tray(icon)
 
   mainWindow.on('minimize', (event) => {
     event.preventDefault()
     mainWindow.webContents.send('minimizeInNotif', '')
   })
 
-  tray.on('click', () => {
+/*   tray.on('click', () => {
     mainWindow.show()
-  })
+  }) */
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.

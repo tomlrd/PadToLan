@@ -12,7 +12,8 @@ const ConfigBG = ({ element, type }: { element: any; type: '' | 'page' | 'pageit
     }
   }
 
-  useEffect(() => {}, [element])
+  useEffect(() => {
+  }, [element])
 
   return (
     <div className="sectionlist" style={{}}>

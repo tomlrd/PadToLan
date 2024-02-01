@@ -496,6 +496,26 @@ const SCDefault: KeyBindList = {
       hold: false,
       repeat: 0,
       delayRepeat: 1000
+    },
+    {
+      uid: '000000000048',
+      name: 'Minig Mod 2',
+      keybind: '2',
+      modifiers: [Modifier.LeftAlt, Modifier.None],
+      doubletap: false,
+      hold: false,
+      repeat: 0,
+      delayRepeat: 1000
+    },
+    {
+      uid: '000000000049',
+      name: 'Minig Mod 3',
+      keybind: '3',
+      modifiers: [Modifier.LeftAlt, Modifier.None],
+      doubletap: false,
+      hold: false,
+      repeat: 0,
+      delayRepeat: 1000
     }
   ]
 }

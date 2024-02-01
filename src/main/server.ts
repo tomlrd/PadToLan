@@ -9,6 +9,7 @@ import { createHttpTerminator } from 'http-terminator'
 import { Server } from 'http'
 import os from 'os'
 import { is } from '@electron-toolkit/utils'
+import {clearAllIntervals} from './actionkeys'
 let serverInstance: Server
 
 export function createServer([layout, options]): void {
@@ -57,12 +58,10 @@ export function createServer([layout, options]): void {
     });
  */
 
-  if (is.dev) {
-    console.log('yhrfytytytr');
-    
+  if (is.dev) {    
     appE.use(express.static(path.resolve('.' ,'build')))
   } else {
-    appE.use(express.static(path.join(__dirname, 'PadApp')));
+    appE.use(express.static(path.join(process.resourcesPath, 'PadApp')))
   }
   appE.use((_req, res, next) => {
     res.setHeader('Content-Type', 'application/javascript')
@@ -77,22 +76,21 @@ export function createServer([layout, options]): void {
     }
     fs.access(path.resolve('images', imageUrl), fs.constants.F_OK, (err) => {
       if (err) {
-        res.status(404).send('Image not found')
+        res.status(404).send(`img not found ${path.resolve(process.resourcesPath, 'PadApp', imageUrl)}`)
       } else {
         if (is.dev) {
-          console.log('______________');
-          console.log('______________');
-          console.log('______________');
-          console.log('______________');
           console.log(path.resolve('images', imageUrl));
-          
-          res.sendFile(path.resolve('images', imageUrl))
+          res.sendFile(path.resolve(process.resourcesPath, 'PadApp', imageUrl))
           return
         }
-        res.sendFile(path.join(__dirname,'PadApp','images', imageUrl))
+        res.sendFile(path.resolve(process.resourcesPath, 'PadApp', imageUrl))
+        console.log(path.resolve(process.resourcesPath, 'PadApp', imageUrl));
+        
+        //path.join(process.resourcesPath, 'PadApp', 'images', imageUrl)
       }
     })
   })
+  
 
   appE.get('/', (_req, res) => {
     console.log('/');
@@ -103,7 +101,7 @@ export function createServer([layout, options]): void {
       res.sendFile(path.resolve('index.html'))
       return
     }
-    res.sendFile(path.join(__dirname,'PadApp','index.html'))
+    res.sendFile(path.join(process.resourcesPath, 'PadApp', 'index.html'))
   })
 
   appE.get('/layout', (_req, res) => {
@@ -122,6 +120,7 @@ export function createServer([layout, options]): void {
   const httpTerminator = createHttpTerminator({ server: serverInstance })
 
   ipcMain.on('stop:server', async (_e, _args) => {
+    await clearAllIntervals()
     await mainWindow.webContents.send('serverstatus', false)
     await httpTerminator.terminate()
   })
