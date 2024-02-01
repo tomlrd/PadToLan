@@ -17,9 +17,9 @@ function KeyBinds(): JSX.Element {
     removeKeybind
   } = useKeyBindsStore()
 
-/*   const handleChange = (type, _uid, k) => {
-    updateKeybind(type, k)
-  } */
+  /*   const handleChange = (type, _uid, k) => {
+      updateKeybind(type, k)
+    } */
 
   const handleReset = (uid) => {
     getKeybind(uid)
@@ -30,7 +30,7 @@ function KeyBinds(): JSX.Element {
       getKeybindList(lastkblist)
     }
 
-    return () => {}
+    return () => { }
   }, [])
 
   return (
@@ -140,6 +140,38 @@ function KeyBinds(): JSX.Element {
                 />
                 <div>hold</div>
               </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={(Number(key.repeat) > 0 || key.repeat == 'infinite') ? true : false}
+                  onChange={(_e) => updateKeybind('repeat', (Number(key.repeat) === 0) ? 2 : 0)}
+                />
+                <div>repeat</div>
+              </label>
+
+
+              {(Number(key.repeat) > 1 || key.repeat == 'infinite') &&
+                <div>
+                  <input
+                    className="input"
+                    onClick={(_e) => getKeybind(key.uid)}
+                    type="text"
+                    value={key.repeat}
+                    onChange={(e) => updateKeybind('repeat', e.target.value)}
+                    style={{width:'60px'}}
+                  />
+                  times
+                  <input
+                    className="input"
+                    onClick={(_e) => getKeybind(key.uid)}
+                    type="text"
+                    value={key.delayRepeat}
+                    onChange={(e) => updateKeybind('repeatDelay', e.target.value)}
+                    style={{width:'60px'}}
+                  />
+                  delay (ms)
+                </div>
+              }
               <button
                 className="remove"
                 onClick={() => {

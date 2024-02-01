@@ -15,7 +15,7 @@ export type Actions = {
   getKeybind: (uid: string) => void
   addKeybindList: () => void
   resetKeybindList: () => void
-  updateKeybind: (type: any, key: string | boolean | null) => void
+  updateKeybind: (type: any, key: string | boolean | null | number) => void
   updateKeybindList: (type: any, data: any) => void
   removeKeybindList: () => void
   removeKeybind: () => void
@@ -173,7 +173,7 @@ export const useKeyBindsStore = create<KeyBindsStore>()(
         }))
       },
 
-      updateKeybind: (type: string, key: string | boolean | null) => {
+      updateKeybind: (type: string, key: string | boolean | null | number) => {
         const keybindlist = get().keybindlist
         const kbselectedList = get().kbselectedList
         const kbselectedItem = get().kbselectedItem
@@ -193,6 +193,8 @@ export const useKeyBindsStore = create<KeyBindsStore>()(
               ...kbselectedItem,
               keybind: key === null ? [] : [key]
             }
+            console.log(updatedItem);
+            
             break
           case 'modifier':
             updatedItem = {
@@ -222,10 +224,24 @@ export const useKeyBindsStore = create<KeyBindsStore>()(
             break
           case 'hold':
             console.log(key)
-
             updatedItem = {
               ...kbselectedItem,
               hold: key
+            }
+            break
+          case 'repeat':
+            console.log(key)
+
+            updatedItem = {
+              ...kbselectedItem,
+              repeat: key
+            }
+            break
+          case 'repeatDelay':
+            console.log(key)
+            updatedItem = {
+              ...kbselectedItem,
+              delayRepeat: key
             }
             break
           default:

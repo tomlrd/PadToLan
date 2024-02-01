@@ -38,7 +38,7 @@ const ConfigItem = () => {
   useEffect(() => {
     if (selectedItem?.action === 'none') {
       setkbaction(null)
-    }
+    } 
   }, [selectedItem])
 
   return (

@@ -1,7 +1,5 @@
 import { Layout, Page, GridItem, Pos, BGRepeat, Justify } from '../types/layouts'
 
-
-
 export function generateUID() {
   const alphanumeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   let uid = ''
@@ -97,16 +95,18 @@ export function getBlankItem(): GridItem {
 }
 const SM = {
   ...getBlankLayout(),
-  name: 'Example Smartphone'
+  name: 'Example Smartphone',
+  uid: '000000L1SCEx'
 }
 SM.bindedKbList = 'SSC100000000'
 SM.width = 375
 SM.height = 800
 SM.nosleep = true
 SM.pages[0].name = 'Ship'
+SM.pages[0].uid = '000000P1SCEx'
 SM.pages[0].pageConfig.bgcolor = '#121212d1'
 SM.pages[0].pageConfig.bgimg = 'C:/Users/stylo/AppData/Local/Programs/padtolan/resources/PadApp/1.png'
-//SM.pages[0].pageConfig.bgimg = 'planet.png'
+//SM.pages[0].pageConfig.bgimg = '1.png'
 SM.pages[0].pageListConfig.bgcolor = '#4e454552'
 SM.pages[0].pageItemConfig.height = '35px'
 SM.pages[0].pageItemConfig.color = '#e1e7ed7a'

@@ -40,7 +40,7 @@ ipcMain.on('action:key', async (_e, [args, _block]) => {
 
     switch (true) {
       case args.repeat === 'infinite':
-      case Number(args.repeat) > 0:
+      case Number(args.repeat) > 1:
         createInterval(keysToPress, args)
         break
       default:
@@ -140,5 +140,10 @@ function createInterval(keysToPress, args) {
   console.log('intervalIds.length', intervalIds.length)
 }
 
-// Arrêter tous les intervalles
-//intervalIds.forEach(clearInterval);
+
+export const clearAllIntervals = () => {
+  intervalIds.forEach((intervalId) => {
+    clearInterval(intervalId);
+    intervalIds.length = 0;
+  });
+};

@@ -9,6 +9,7 @@ import { createHttpTerminator } from 'http-terminator'
 import { Server } from 'http'
 import os from 'os'
 import { is } from '@electron-toolkit/utils'
+import {clearAllIntervals} from './actionkeys'
 let serverInstance: Server
 
 export function createServer([layout, options]): void {
@@ -79,10 +80,12 @@ export function createServer([layout, options]): void {
       } else {
         if (is.dev) {
           console.log(path.resolve('images', imageUrl));
-          res.sendFile(path.resolve('images', imageUrl))
+          res.sendFile(path.resolve(process.resourcesPath, 'PadApp', imageUrl))
           return
         }
         res.sendFile(path.resolve(process.resourcesPath, 'PadApp', imageUrl))
+        console.log(path.resolve(process.resourcesPath, 'PadApp', imageUrl));
+        
         //path.join(process.resourcesPath, 'PadApp', 'images', imageUrl)
       }
     })
@@ -117,6 +120,7 @@ export function createServer([layout, options]): void {
   const httpTerminator = createHttpTerminator({ server: serverInstance })
 
   ipcMain.on('stop:server', async (_e, _args) => {
+    await clearAllIntervals()
     await mainWindow.webContents.send('serverstatus', false)
     await httpTerminator.terminate()
   })
