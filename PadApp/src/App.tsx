@@ -15,6 +15,7 @@ function App() {
   const [pageW, setPageW] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<number>(selectedPageI);
   const [noSleepDiv, setNoSleepDiv] = useState<boolean>(false);
+  const [blockBtn, setBlocBtn] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchLayouts = async () => {
@@ -78,23 +79,33 @@ function App() {
     setActiveTab(index);
   }
 
-  const handleSendKey = (e: any, uid: string) => {
-    console.log(uid);
-    e.preventDefault()
-    fetch(`/key/${uid}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
+  const handleBlockBtn = () => {
+    setBlocBtn(false)
+    setTimeout(() => {
+      setBlocBtn(true)
+    }, 300);
   }
+
+  const handleSendKey = (e: any, uid: string) => {
+    handleBlockBtn();
+    e.preventDefault();
+    if (blockBtn) {
+      console.log(uid);
+      fetch(`/key/${uid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+  };
+
 
   const handleClick = (_e: any, element: any) => {
     console.log(element.onclickcolor);
     console.log(_e.target.style.color);
     _e.target.style.color = element.onclickcolor
     _e.target.style.background = element.onclickbgcolor
-
     _e.target.style.border = element.onclickborder
     setTimeout(() => {
       _e.target.style.color = element.color
@@ -111,6 +122,7 @@ function App() {
       handleSwipe(1)
     ),
     trackTouch: true,
+    delta: {left: 180, right: 180}
   });
 
   const handleSwipe = (direction: number) => {
@@ -135,7 +147,7 @@ function App() {
 
 
   return (
-    <div >
+    <div>
       {noSleepDiv &&
         <div id='nosleep'>
           <div id='nosleepcontent'>

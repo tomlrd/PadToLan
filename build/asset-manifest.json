@@ -1,13 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.e9d6e80c.css",
-    "main.js": "/static/js/main.0e636840.js",
+    "main.css": "/static/css/main.b46476ce.css",
+    "main.js": "/static/js/main.eea54eab.js",
+    "static/media/Orbitront.ttf": "/static/media/Orbitront.7228a1c750b75b23bdb4.ttf",
     "index.html": "/index.html",
-    "main.e9d6e80c.css.map": "/static/css/main.e9d6e80c.css.map",
-    "main.0e636840.js.map": "/static/js/main.0e636840.js.map"
+    "main.b46476ce.css.map": "/static/css/main.b46476ce.css.map",
+    "main.eea54eab.js.map": "/static/js/main.eea54eab.js.map"
   },
   "entrypoints": [
-    "static/css/main.e9d6e80c.css",
-    "static/js/main.0e636840.js"
+    "static/css/main.b46476ce.css",
+    "static/js/main.eea54eab.js"
   ]
 }
