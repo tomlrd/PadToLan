@@ -22,6 +22,7 @@ function Options(): JSX.Element {
       <div className="optline">
         <label>
           <input
+          disabled={true}
             type="checkbox"
             checked={options.general.startWithWindows}
             onChange={(_e) =>
@@ -34,6 +35,7 @@ function Options(): JSX.Element {
       <div className="optline">
         <label>
           <input
+          disabled={true}
             type="checkbox"
             checked={options.general.serverwhenstart}
             onChange={(_e) =>
@@ -46,6 +48,7 @@ function Options(): JSX.Element {
       <div className="optline">
         <label>
           <input
+          disabled={true}
             type="checkbox"
             checked={options.general.startMinimized}
             onChange={(_e) =>
@@ -58,6 +61,7 @@ function Options(): JSX.Element {
       <div className="optline">
         <label>
           <input
+          disabled={true}
             type="checkbox"
             checked={options.general.minimizeInNotif}
             onChange={(_e) =>
@@ -88,6 +92,7 @@ function Options(): JSX.Element {
       <div className="optline">
         <div className="desc">ipwhitelist (comma separated)</div>
         <input
+        disabled={true}
           className={'input'}
           type="text"
           value={options.server.ipwhitelist}

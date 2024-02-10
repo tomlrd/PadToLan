@@ -9,7 +9,8 @@ import { createHttpTerminator } from 'http-terminator'
 import { Server } from 'http'
 import os from 'os'
 import { is } from '@electron-toolkit/utils'
-import {clearAllIntervals} from './actionkeys'
+import { clearAllIntervals } from './actionkeys'
+import activeWindow from 'active-win'
 let serverInstance: Server
 
 export function createServer([layout, options]): void {
@@ -19,6 +20,10 @@ export function createServer([layout, options]): void {
     .filter((iface: any) => iface.family === 'IPv4' && !iface.internal)
     .map((iface: any) => iface.address)
   const port = options.server.port
+  const isBlock = options.general.blockToFile
+  console.log("isBlock");
+  console.log(isBlock);
+
   const appE: Express = express()
   //let connections = 0
   console.log(options)
@@ -39,6 +44,7 @@ export function createServer([layout, options]): void {
     appE.use(restrictIP(allowedIPAddresses))
   }
 
+
   /*     const maxConnections = options.server.maxConnections || 0;
 
     appE.use((_req, res, next) => {
@@ -58,8 +64,8 @@ export function createServer([layout, options]): void {
     });
  */
 
-  if (is.dev) {    
-    appE.use(express.static(path.resolve('.' ,'build')))
+  if (is.dev) {
+    appE.use(express.static(path.resolve('.', 'build')))
   } else {
     appE.use(express.static(path.join(process.resourcesPath, 'PadApp')))
   }
@@ -85,19 +91,19 @@ export function createServer([layout, options]): void {
         }
         res.sendFile(path.resolve(process.resourcesPath, 'PadApp', imageUrl))
         console.log(path.resolve(process.resourcesPath, 'PadApp', imageUrl));
-        
+
         //path.join(process.resourcesPath, 'PadApp', 'images', imageUrl)
       }
     })
   })
-  
+
 
   appE.get('/', (_req, res) => {
     console.log('/');
-    
+
     if (is.dev) {
       console.log('dev');
-      
+
       res.sendFile(path.resolve('index.html'))
       return
     }
@@ -109,9 +115,20 @@ export function createServer([layout, options]): void {
   })
 
   appE.get('/key/:id', (req, res) => {
-    mainWindow.webContents.send('key', [req.params.id, options])
-    res.status(200).end()
-  })
+    if (isBlock !== null) {
+      (async () => {
+        const win = await activeWindow(options);
+        if (win?.title === isBlock) {
+          console.log(win?.title);
+          mainWindow.webContents.send('key', [req.params.id, options])
+          res.status(200).end();
+        } else {
+          res.status(404).end(); 
+        }
+      })();
+    }
+  });
+  
 
   serverInstance = appE.listen(port, () => {
     mainWindow.webContents.send('serverstatus', [localIPv4[0], port])
