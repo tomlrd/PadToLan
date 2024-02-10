@@ -126,6 +126,9 @@ export function createServer([layout, options]): void {
           res.status(404).end(); 
         }
       })();
+    } else {
+      mainWindow.webContents.send('key', [req.params.id, options])
+      res.status(200).end();
     }
   });
   
