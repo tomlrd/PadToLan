@@ -27,7 +27,11 @@ ipcMain.on('action:key', async (_e, [args, _block]) => {
     if (keyString !== undefined) {
       if (keyString === 'Semicolon') {
         keysToPress = [Key['M']]
-      } else {
+      } 
+      else if (keyString >= 0 && keyString <= 9) {
+        keysToPress = [Key[`Num${keyString}`]];
+    }
+      else {
         keysToPress = [Key[keyString]]
       }
     }
