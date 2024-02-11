@@ -27,14 +27,15 @@ ipcMain.on('action:key', async (_e, [args, _block]) => {
     if (keyString !== undefined) {
       if (keyString === 'Semicolon') {
         keysToPress = [Key['M']]
-      } 
+      }
       else if (keyString >= 0 && keyString <= 9) {
         keysToPress = [Key[`Num${keyString}`]];
-    }
+      }
       else {
         keysToPress = [Key[keyString]]
       }
     }
+
     if (keyM1 !== 'None') {
       keysToPress.unshift(Key[keyM1])
     }
@@ -48,18 +49,19 @@ ipcMain.on('action:key', async (_e, [args, _block]) => {
         createInterval(keysToPress, args)
         break
       default:
+        
         if (args.doubletap === true) {
           doubletap(keysToPress)
           return
-        }
-        if (args.hold === true) {
+        } else if (args.hold === true) {
           hold(keysToPress)
           return
+        } else {
+          console.log('la');
+          
+          await keyboard.pressKey(...keysToPress)
+          await keyboard.releaseKey(...keysToPress)
         }
-        await keyboard.pressKey(keysToPress[0])
-        await keyboard.pressKey(keysToPress[1])
-        await keyboard.releaseKey(keysToPress[1])
-        await keyboard.releaseKey(keysToPress[0])
         console.log(keysToPress)
 
         break
