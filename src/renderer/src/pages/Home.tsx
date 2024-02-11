@@ -34,7 +34,6 @@ function Home(): JSX.Element {
 
   useEffect(() => {
     console.log(window.api.resourcesPath);
-    document.title = "PadToLan";
     
     window.electron.ipcRenderer.on('firstrun', (_e, isFirstRun) => {
       if (isFirstRun === true) {

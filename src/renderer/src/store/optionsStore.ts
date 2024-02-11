@@ -41,7 +41,7 @@ export const useOptionsStore = create<OptionsStore>()(
                 newOptions.general.minimizeInNotif = data
                 break
               case 'blockToFile':
-                newOptions.general.blockToFile = data
+                newOptions.general.blockToFile = (data === "" || data === undefined || data === null) ? null : data
                 break
               default:
                 break

@@ -9,6 +9,8 @@ const Topbar = () => {
   const handleStartServer = () => {
     console.log(selectedLayout?.name)
     window.electron.ipcRenderer.send('start:server', [selectedLayout, options])
+    console.log(options);
+    
   }
 
   return (
