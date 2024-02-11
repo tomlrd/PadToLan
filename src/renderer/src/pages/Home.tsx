@@ -110,9 +110,9 @@ function Home(): JSX.Element {
   useEffect(() => {
     setlayoutW(selectedLayout?.width)
     setlayoutH(selectedLayout?.height)
-    console.log('layout:', JSON.stringify(selectedLayout));
+    //console.log('layout:', JSON.stringify(selectedLayout));
     selectedLayout?.pages.forEach(el => {
-      console.log('pagesitems:', JSON.stringify(el.items));
+      //console.log('pagesitems:', JSON.stringify(el.items));
     });
     
     //console.log(JSON.stringify(selectedLayout?.pages[0].items))
@@ -275,6 +275,7 @@ function Home(): JSX.Element {
                   <option value="null">ADD ELEMENT</option>
                   <option value="button">BUTTON</option>
                   <option value="img/text">IMG/TEXT</option>
+                  <option value="triangle">TRIANGLE</option>
                 </select>
                 <ConfigPage />
                 <ConfigPageList />

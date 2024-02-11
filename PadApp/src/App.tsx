@@ -242,18 +242,18 @@ function App() {
                             static: true
                           }}
                           style={{
-                            backgroundRepeat: item.bgrepeat,
-                            backgroundPositionX: item.bgpos.x,
-                            backgroundPositionY: item.bgpos.y,
-                            backgroundSize: item.bgsize,
-                            backgroundImage: `url("images/${item.bgimg}")`,
+                            background: item.bgcolor,
                             borderRadius: item.borderRadius,
                             textShadow: item.textShadow,
                             boxShadow: item.type === "button" ? item.boxShadow : ""
                           }}
                         >
                           <div className='btninn' style={{
-                            background: item.bgcolor,
+                            backgroundRepeat: item.bgrepeat,
+                            backgroundPositionX: item.bgpos.x,
+                            backgroundPositionY: item.bgpos.y,
+                            backgroundSize: item.bgsize,
+                            backgroundImage: `url("images/${item.bgimg}")`,
                             border: item.border,
                             borderRadius: item.borderRadius,
                             color: item.color,

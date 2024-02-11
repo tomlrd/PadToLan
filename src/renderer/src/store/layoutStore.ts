@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { Page, GridItem, Layout } from '../types/layouts'
 import { DefaultLayouts, getBlankLayout, getBlankPage, getBlankItem } from './layoutsdefault'
+import { D2 } from './defaultExample1'
 
 type Layouts = {
   layouts: Layout[]
@@ -49,7 +50,7 @@ export const useLayoutsStore = create<LayoutsStore>()(
       },
       resetLayouts: () => {
         set(() => ({
-          layouts: DefaultLayouts,
+          layouts: DefaultLayouts.concat(D2),
           selectedLayout: DefaultLayouts[0],
           selectedPage: DefaultLayouts[0].pages[0],
           lastLayout: DefaultLayouts[0].uid
@@ -92,9 +93,14 @@ export const useLayoutsStore = create<LayoutsStore>()(
           return
         }
 
-        if (type !== 'button') {
+        if ( type === 'triangle') {
+          newItem = { ...newItem, type: 'triangle' }
+        } else if ( type === 'button') {
+          newItem = { ...newItem, type: 'button' }
+        } else if ( type === 'img/text') {
           newItem = { ...newItem, type: 'img/text' }
         }
+        
         console.log(newItem)
 
         const updatedPageItems = [...selectedPage.items, newItem]

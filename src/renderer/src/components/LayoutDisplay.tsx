@@ -3,9 +3,10 @@ import { Page, GridItem } from '../types/layouts'
 import { useLayoutsStore } from '../store'
 import GridLayout from 'react-grid-layout'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import PowerTriangle from './Triangle'
 //import path from 'path'
 
-function LayoutDisplay({}: {}): JSX.Element {
+function LayoutDisplay({ }: {}): JSX.Element {
   const { updateItem, selectedLayout, selectedPage, selectedItem, getPage, getItem } =
     useLayoutsStore()
   const [pageI, setPageI] = useState<number>(
@@ -170,22 +171,45 @@ function LayoutDisplay({}: {}): JSX.Element {
                         boxShadow: item.type === 'button' ? item.boxShadow : ''
                       }}
                     >
-                      <div
-                        className="btninn"
-                        style={{
-                          background: item.bgcolor,
-                          borderRadius: item.borderRadius,
-                          color: item.color,
-                          fontFamily: item.fontFamily,
-                          fontWeight: item.fontWeight,
-                          fontSize: item.fontSize,
-                          border:
-                            selectedItem?.grid.i === item.grid.i ? '1px solid red' : item.border
-                        }}
-                        onClick={(e) => handleClick(e, item)}
-                      >
-                        {item.name}
-                      </div>
+                      {item.type === "triangle" &&
+                        <PowerTriangle initialPower={0} />
+                      }
+                      {item.type === "img/text" &&
+                        <div
+                          className="btninn"
+                          style={{
+                            background: item.bgcolor,
+                            borderRadius: item.borderRadius,
+                            color: item.color,
+                            fontFamily: item.fontFamily,
+                            fontWeight: item.fontWeight,
+                            fontSize: item.fontSize,
+                            border:
+                              selectedItem?.grid.i === item.grid.i ? '1px solid red' : item.border
+                          }}
+                          onClick={(e) => handleClick(e, item)}
+                        >
+                          {item.name}
+                        </div>
+                      }
+                      {item.type === "button" &&
+                        <div
+                          className="btninn"
+                          style={{
+                            background: item.bgcolor,
+                            borderRadius: item.borderRadius,
+                            color: item.color,
+                            fontFamily: item.fontFamily,
+                            fontWeight: item.fontWeight,
+                            fontSize: item.fontSize,
+                            border:
+                              selectedItem?.grid.i === item.grid.i ? '1px solid red' : item.border
+                          }}
+                          onClick={(e) => handleClick(e, item)}
+                        >
+                          {item.name}
+                        </div>
+                      }
                     </div>
                   ))}
                 </GridLayout>

@@ -48,7 +48,7 @@ export interface GridItem {
   fontFamily: string
   fontWeight: string
   fontSize: string
-  type: 'button' | 'img/text'
+  type: 'button' | 'img/text' | 'triangle'
   onclickbgcolor: string
   onclickcolor: string
   onclickborder: string
