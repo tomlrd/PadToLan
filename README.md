@@ -23,7 +23,7 @@ WORK IN PROGRESS
 ### Prerequisites
 - [Node.js](https://nodejs.org/) >= 18.15 installed
 - ```bash
-   git clone https://github.com/yourusername/PadToLan.git
+   git clone https://github.com/tomlrd/PadToLan.git
 - Naviguate to PadToLan/PadApp
 - ```bash
    npm install
