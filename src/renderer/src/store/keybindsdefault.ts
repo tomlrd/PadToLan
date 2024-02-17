@@ -489,7 +489,7 @@ const SCDefault: KeyBindList = {
     },
     {
       uid: '000000000047',
-      name: 'Minig Mod 1',
+      name: 'Mining Mod 1',
       keybind: '1',
       modifiers: [Modifier.LeftAlt, Modifier.None],
       doubletap: false,
@@ -499,7 +499,7 @@ const SCDefault: KeyBindList = {
     },
     {
       uid: '000000000048',
-      name: 'Minig Mod 2',
+      name: 'Mining Mod 2',
       keybind: '2',
       modifiers: [Modifier.LeftAlt, Modifier.None],
       doubletap: false,
@@ -509,9 +509,89 @@ const SCDefault: KeyBindList = {
     },
     {
       uid: '000000000049',
-      name: 'Minig Mod 3',
+      name: 'Mining Mod 3',
       keybind: '3',
       modifiers: [Modifier.LeftAlt, Modifier.None],
+      doubletap: false,
+      hold: false,
+      repeat: 0,
+      delayRepeat: 1000
+    },
+    {
+      uid: '000000000050',
+      name: 'Exit seat',
+      keybind: 'Y',
+      modifiers: [Modifier.None, Modifier.None],
+      doubletap: false,
+      hold: true,
+      repeat: 0,
+      delayRepeat: 1000
+    },
+    {
+      uid: '000000000051',
+      name: 'Emergency Exit seat',
+      keybind: 'U',
+      modifiers: [Modifier.LeftShift, Modifier.None],
+      doubletap: false,
+      hold: false,
+      repeat: 0,
+      delayRepeat: 1000
+    },
+    {
+      uid: '000000000052',
+      name: 'Self Destruct',
+      keybind: 'Backspace',
+      modifiers: [Modifier.None, Modifier.None],
+      doubletap: false,
+      hold: false,
+      repeat: 0,
+      delayRepeat: 1000
+    },
+    {
+      uid: '000000000053',
+      name: 'Autoland',
+      keybind: 'N',
+      modifiers: [Modifier.LeftAlt, Modifier.None],
+      doubletap: false,
+      hold: true,
+      repeat: 0,
+      delayRepeat: 1000
+    },
+    {
+      uid: '000000000054',
+      name: 'Req loading',
+      keybind: 'L',
+      modifiers: [Modifier.LeftAlt, Modifier.None],
+      doubletap: false,
+      hold: false,
+      repeat: 0,
+      delayRepeat: 1000
+    },
+    {
+      uid: '000000000055',
+      name: 'Cycle config',
+      keybind: 'K',
+      modifiers: [Modifier.LeftAlt, Modifier.None],
+      doubletap: false,
+      hold: false,
+      repeat: 0,
+      delayRepeat: 1000
+    },
+    {
+      uid: '000000000056',
+      name: 'Lock Doors',
+      keybind: 'Backslash',
+      modifiers: [Modifier.None, Modifier.None],
+      doubletap: false,
+      hold: false,
+      repeat: 0,
+      delayRepeat: 1000
+    },
+    {
+      uid: '000000000057',
+      name: 'Lock Port',
+      keybind: 'K',
+      modifiers: [Modifier.RightAlt, Modifier.None],
       doubletap: false,
       hold: false,
       repeat: 0,

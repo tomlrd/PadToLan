@@ -111,11 +111,11 @@ function Home(): JSX.Element {
     setlayoutW(selectedLayout?.width)
     setlayoutH(selectedLayout?.height)
     //console.log('layout:', JSON.stringify(selectedLayout));
-    selectedLayout?.pages.forEach(el => {
+    selectedLayout?.pages.forEach(_el => {
       //console.log('pagesitems:', JSON.stringify(el.items));
     });
     
-    //console.log(JSON.stringify(selectedLayout?.pages[0].items))
+    console.log(JSON.stringify(selectedLayout?.pages[0].items))
   }, [selectedLayout])
 
   return (
@@ -275,7 +275,7 @@ function Home(): JSX.Element {
                   <option value="null">ADD ELEMENT</option>
                   <option value="button">BUTTON</option>
                   <option value="img/text">IMG/TEXT</option>
-                  <option value="triangle">TRIANGLE</option>
+                  {/* <option value="triangle">TRIANGLE</option> */}
                 </select>
                 <ConfigPage />
                 <ConfigPageList />

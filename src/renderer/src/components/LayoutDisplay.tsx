@@ -171,9 +171,12 @@ function LayoutDisplay({ }: {}): JSX.Element {
                         boxShadow: item.type === 'button' ? item.boxShadow : ''
                       }}
                     >
-                      {item.type === "triangle" &&
-                        <PowerTriangle initialPower={0} />
-                      }
+{/*                       {item.type === "triangle" &&
+                        <div className='btninn'>
+                          <PowerTriangle/>
+                        </div>
+                      } */}
+
                       {item.type === "img/text" &&
                         <div
                           className="btninn"

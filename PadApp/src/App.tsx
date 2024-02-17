@@ -6,6 +6,7 @@ import NoSleep from '@uriopass/nosleep.js';
 import './App.css';
 import { DefaultLayouts } from './layoutsdefault'
 import { useSwipeable } from 'react-swipeable';
+import PowerTriangle from './Triangle'
 
 function App() {
   const noSleep = new NoSleep();
@@ -123,7 +124,7 @@ function App() {
       handleSwipe(1)
     ),
     trackTouch: true,
-    delta: {left: 180, right: 180}
+    delta: { left: 180, right: 180 }
   });
 
   const handleSwipe = (direction: number) => {
@@ -230,7 +231,7 @@ function App() {
                       isBounded={false}
                     >
                       {page.items.map((item: any) => (
-                        <button
+                        <div
                           className="btn"
                           onClick={(e) => handleSendKey(e, item.action)}
                           key={item.grid.i}
@@ -242,30 +243,58 @@ function App() {
                             static: true
                           }}
                           style={{
-                            background: item.bgcolor,
-                            borderRadius: item.borderRadius,
-                            textShadow: item.textShadow,
-                            boxShadow: item.type === "button" ? item.boxShadow : ""
-                          }}
-                        >
-                          <div className='btninn' style={{
                             backgroundRepeat: item.bgrepeat,
                             backgroundPositionX: item.bgpos.x,
                             backgroundPositionY: item.bgpos.y,
                             backgroundSize: item.bgsize,
-                            backgroundImage: `url("images/${item.bgimg}")`,
-                            border: item.border,
+                            backgroundImage: `url("file:///../${item.bgimg}")`,
                             borderRadius: item.borderRadius,
-                            color: item.color,
-                            fontFamily: item.fontFamily,
-                            fontWeight: item.fontWeight,
-                            fontSize: item.fontSize,
+                            textShadow: item.textShadow,
+                            boxShadow: item.type === 'button' ? item.boxShadow : ''
                           }}
-                            onClick={(e) => handleClick(e, item)}
-                          >
-                            {item.name}
-                          </div>
-                        </button>
+                        >
+                          {item.type === "triangle" &&
+                            <div className='btninn'>
+                              tri
+                              <PowerTriangle />
+                            </div>
+                          }
+
+                          {item.type === "img/text" &&
+                            <div
+                              className="btninn"
+                              style={{
+                                background: item.bgcolor,
+                                borderRadius: item.borderRadius,
+                                color: item.color,
+                                fontFamily: item.fontFamily,
+                                fontWeight: item.fontWeight,
+                                fontSize: item.fontSize,
+                                border: 'none'
+                              }}
+                              onClick={(e) => handleClick(e, item)}
+                            >
+                              {item.name}
+                            </div>
+                          }
+                          {item.type === "button" &&
+                            <div
+                              className="btninn"
+                              style={{
+                                background: item.bgcolor,
+                                borderRadius: item.borderRadius,
+                                color: item.color,
+                                fontFamily: item.fontFamily,
+                                fontWeight: item.fontWeight,
+                                fontSize: item.fontSize,
+                                border: 'none'
+                              }}
+                              onClick={(e) => handleClick(e, item)}
+                            >
+                              {item.name}
+                            </div>
+                          }
+                        </div>
                       ))}
                     </GridLayout>
                   </TabPanel>

@@ -1,28 +1,20 @@
 import { ipcMain } from 'electron'
 const { keyboard, Key } = require('@nut-tree/nut-js')
-//import activeWindow from 'active-win'
 keyboard.config.autoDelayMs = 50
-console.log(Key)
 
-// Tableau pour stocker les identifiants des intervalles
+console.log(Key);
+
+
 const intervalIds: any = []
 
 ipcMain.on('action:key', async (_e, [args, _block]) => {
-  console.log(args)
 
-  //const activeWin = await activeWindow()
-  /*     if (activeWin?.owner.name !== block && block.trim().length !== 0) {
-            return
-        } */
   const keyString = args.key
   const keyM1 = args.modifiers[0]
   const keyM2 = args.modifiers[1]
-  console.log(keyString)
 
   try {
     let keysToPress: any = []
-    console.log('__________')
-    console.log(keyString)
 
     if (keyString !== undefined) {
       if (keyString === 'Semicolon') {
@@ -49,7 +41,6 @@ ipcMain.on('action:key', async (_e, [args, _block]) => {
         createInterval(keysToPress, args)
         break
       default:
-        
         if (args.doubletap === true) {
           doubletap(keysToPress)
           return
@@ -58,12 +49,19 @@ ipcMain.on('action:key', async (_e, [args, _block]) => {
           return
         } else {
           console.log('la');
-          
-          await keyboard.pressKey(...keysToPress)
-          await keyboard.releaseKey(...keysToPress)
+          const spec = await handleSpecial(keysToPress[0])
+          if (spec) {
+            //a verif
+            await keyboard.pressKey(keysToPress[0])
+            await keyboard.pressKey(keysToPress[1])
+            await keyboard.releaseKey(keysToPress[1])
+            await keyboard.releaseKey(keysToPress[0])
+          } else {
+            await keyboard.pressKey(...keysToPress)
+            await keyboard.releaseKey(...keysToPress)
+          }
         }
         console.log(keysToPress)
-
         break
     }
   } catch (error) {
@@ -100,7 +98,7 @@ async function hold(ktp: any) {
 }
 
 async function handleSpecial(mod: string) {
-  if (mod === 'RightAlt' || 'RightShift' || 'RightControl') {
+  if (mod === 'RightAlt' || 'RightShift' || 'RightControl' || 'LeftAlt' || 'LeftShift' || 'LeftControl') {
     return true
   } else {
     return false
@@ -110,14 +108,12 @@ async function handleSpecial(mod: string) {
 function createInterval(keysToPress, args) {
   const foundInt = intervalIds.find((int) => int.id === args.uid)
   const index = intervalIds.findIndex((int) => int.id === args.uid)
-  console.log('nombre de fois a repeat', args.repeat)
+  console.log('number to repeat', args.repeat)
 
   if (foundInt !== undefined) {
-    console.log('foundInt', foundInt.id)
     clearInterval(foundInt.intervalId)
     intervalIds.splice(index, 1)
   } else {
-    console.log('pas de foundInt')
     let currentIndex = 0
     const intervalId = setInterval(() => {
       if (currentIndex === args.repeat) {
@@ -143,7 +139,6 @@ function createInterval(keysToPress, args) {
     }, args.delayRepeat)
     intervalIds.push({ id: args.uid, intervalId })
   }
-  console.log('intervalIds.length', intervalIds.length)
 }
 
 

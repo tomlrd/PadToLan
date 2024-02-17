@@ -113,7 +113,7 @@ function KeyBinds(): JSX.Element {
                 ))}
               </select>
 
-              <select
+{/*               <select
                 value={key.modifiers[1] ? key.modifiers[1] : 'None'}
                 onClick={(_e) => getKeybind(key.uid)}
                 onChange={(e) => updateKeybind('modifier2', e.target.value)}
@@ -123,7 +123,7 @@ function KeyBinds(): JSX.Element {
                     {Modifier[modifier]}
                   </option>
                 ))}
-              </select>
+              </select> */}
               <label>
                 <input
                   type="checkbox"

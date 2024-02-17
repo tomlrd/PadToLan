@@ -75,6 +75,7 @@ export function createServer([layout, options]): void {
     next()
   })
 
+
   appE.use('/images/:imageUrl', (req, res) => {
     let imageUrl = req.originalUrl
     if (imageUrl.indexOf('/images/') === 0) {
@@ -123,7 +124,7 @@ export function createServer([layout, options]): void {
           mainWindow.webContents.send('key', [req.params.id, options])
           res.status(200).end();
         } else {
-          res.status(404).end(); 
+          res.status(404).end();
         }
       })();
     } else {
@@ -131,7 +132,7 @@ export function createServer([layout, options]): void {
       res.status(200).end();
     }
   });
-  
+
 
   serverInstance = appE.listen(port, () => {
     mainWindow.webContents.send('serverstatus', [localIPv4[0], port])

@@ -1,5 +1,5 @@
 import { Layout } from '@renderer/types/layouts'
-import { generateUID, getBlankLayout } from './layoutsdefault'
+import {  getBlankLayout } from './layoutsdefault'
 
 
 const SM1 = {

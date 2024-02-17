@@ -140,8 +140,8 @@ SM.pages[0].items = [
     grid: {
       i: "zT6G31pDpJLF",
       x: 0,
-      y: 2,
-      w: 7,
+      y: 0,
+      w: 4,
       h: 4
     },
     color: "#7ab4dd",
@@ -167,12 +167,12 @@ SM.pages[0].items = [
     boxShadow: "0 0 8px 1px black"
   },
   {
-    name: "All",
+    name: "Power All",
     grid: {
       i: "BOojw1q8YqXN",
-      x: 7,
-      y: 2,
-      w: 5,
+      x: 4,
+      y: 0,
+      w: 4,
       h: 4
     },
     color: "#7ab4dd",
@@ -202,7 +202,7 @@ SM.pages[0].items = [
     grid: {
       i: "T8mveUyeueRc",
       x: 0,
-      y: 6,
+      y: 4,
       w: 4,
       h: 3
     },
@@ -233,9 +233,9 @@ SM.pages[0].items = [
     grid: {
       i: "ZbPosFp7NlBJ",
       x: 0,
-      y: 22,
+      y: 25,
       w: 3,
-      h: 6
+      h: 3
     },
     color: "#7ab4dd",
     bgcolor: "#161550c7",
@@ -263,10 +263,10 @@ SM.pages[0].items = [
     name: "TRAVEL",
     grid: {
       i: "MnrpH18FYg0R",
-      x: 3,
-      y: 22,
+      x: 0,
+      y: 28,
       w: 3,
-      h: 6
+      h: 3
     },
     color: "#7ab4dd",
     bgcolor: "#161550c7",
@@ -294,10 +294,10 @@ SM.pages[0].items = [
     name: "Pads",
     grid: {
       i: "MUbZjEIccQex",
-      x: 0,
-      y: 14,
-      w: 5,
-      h: 3
+      x: 3,
+      y: 15,
+      w: 3,
+      h: 6
     },
     color: "#7ab4dd",
     bgcolor: "#05263ec7",
@@ -322,13 +322,13 @@ SM.pages[0].items = [
     boxShadow: "0 0 8px 1px black"
   },
   {
-    name: "Ask land",
+    name: "Request landing",
     grid: {
       i: "H9iwOx6P70iu",
-      x: 0,
-      y: 17,
-      w: 5,
-      h: 3
+      x: 6,
+      y: 15,
+      w: 3,
+      h: 6
     },
     color: "#7ab4dd",
     bgcolor: "#05263ec7",
@@ -356,9 +356,9 @@ SM.pages[0].items = [
     name: "Decoupled",
     grid: {
       i: "Q1vSaMChfe8c",
-      x: 7,
-      y: 14,
-      w: 5,
+      x: 0,
+      y: 11,
+      w: 4,
       h: 3
     },
     color: "#7ab4dd",
@@ -375,7 +375,7 @@ SM.pages[0].items = [
     action: "000000000011",
     fontFamily: "Orbitront",
     fontWeight: "",
-    fontSize: "14px",
+    fontSize: "13px",
     type: "button",
     onclickbgcolor: "#05363e",
     onclickcolor: "#cdd4d9",
@@ -387,9 +387,9 @@ SM.pages[0].items = [
     name: "Vtol",
     grid: {
       i: "OasXSkNpgxIA",
-      x: 7,
+      x: 4,
       y: 11,
-      w: 5,
+      w: 4,
       h: 3
     },
     color: "#7ab4dd",
@@ -419,7 +419,7 @@ SM.pages[0].items = [
     grid: {
       i: "qJVhHCpw4uPW",
       x: 4,
-      y: 6,
+      y: 4,
       w: 4,
       h: 3
     },
@@ -450,7 +450,7 @@ SM.pages[0].items = [
     grid: {
       i: "Yroi7SxuwC69",
       x: 8,
-      y: 6,
+      y: 4,
       w: 4,
       h: 3
     },
@@ -477,12 +477,12 @@ SM.pages[0].items = [
     boxShadow: "0 0 8px 1px black"
   },
   {
-    name: "Cruise",
+    name: "Cruise Control",
     grid: {
       i: "efA6EyIBbqjD",
-      x: 7,
-      y: 17,
-      w: 5,
+      x: 0,
+      y: 8,
+      w: 8,
       h: 3
     },
     color: "#7ab4dd",
@@ -511,10 +511,10 @@ SM.pages[0].items = [
     name: "1",
     grid: {
       i: "sNT2Qba9N4fV",
-      x: 6,
-      y: 28,
+      x: 9,
+      y: 27,
       w: 3,
-      h: 3
+      h: 2
     },
     color: "#7ab4dd",
     bgcolor: "#123a2dc7",
@@ -543,9 +543,9 @@ SM.pages[0].items = [
     grid: {
       i: "goLICk2ChQEo",
       x: 9,
-      y: 28,
+      y: 29,
       w: 3,
-      h: 3
+      h: 2
     },
     color: "#7ab4dd",
     bgcolor: "#123a2dc7",
@@ -574,9 +574,9 @@ SM.pages[0].items = [
     grid: {
       i: "qruZ8vq6aRHk",
       x: 0,
-      y: 11,
-      w: 5,
-      h: 3
+      y: 15,
+      w: 3,
+      h: 6
     },
     color: "#7ab4dd",
     bgcolor: "#05263ec7",
@@ -605,9 +605,9 @@ SM.pages[0].items = [
     grid: {
       i: "9viLARy7690N",
       x: 9,
-      y: 22,
+      y: 25,
       w: 3,
-      h: 6
+      h: 2
     },
     color: "#7ab4dd",
     bgcolor: "#123a2dc7",
@@ -632,11 +632,11 @@ SM.pages[0].items = [
     boxShadow: "0 0 8px 1px black"
   },
   {
-    name: "Scan",
+    name: "Mode Scanning",
     grid: {
       i: "Bbi6wy61ehOl",
       x: 6,
-      y: 22,
+      y: 25,
       w: 3,
       h: 6
     },
@@ -666,8 +666,8 @@ SM.pages[0].items = [
     name: "ASK",
     grid: {
       i: "rOpIVyzYRE23",
-      x: 0,
-      y: 28,
+      x: 3,
+      y: 25,
       w: 3,
       h: 3
     },
@@ -719,6 +719,192 @@ SM.pages[0].items = [
     fontSize: "12px",
     type: "button",
     onclickbgcolor: "#4c1550c7",
+    onclickcolor: "#7ab4dd",
+    onclickborder: "1px solid #ffffff36",
+    textShadow: "0 0 8px 1px black",
+    boxShadow: "0 0 8px 1px black"
+  },
+  {
+    name: "Lock",
+    grid: {
+      i: "qSNaSsf45guV",
+      x: 0,
+      y: 21,
+      w: 3,
+      h: 3
+    },
+    color: "#7ab4dd",
+    bgcolor: "#05263ec7",
+    bgimg: "none",
+    bgsize: "cover",
+    bgpos: {
+      x: Pos.center,
+      y: Pos.center
+    },
+    bgrepeat: BGRepeat.norepeat,
+    border: "1px solid #ffffff36",
+    borderRadius: "2px",
+    action: "000000000056",
+    fontFamily: "Orbitront",
+    fontWeight: "",
+    fontSize: "14px",
+    type: "button",
+    onclickbgcolor: "#bf3c15",
+    onclickcolor: "#cdd4d9",
+    onclickborder: "1px solid #ffffff36",
+    textShadow: "0 0 8px 1px black",
+    boxShadow: "0 0 8px 1px black"
+  },
+  {
+    name: "Lock port ",
+    grid: {
+      i: "enb4F5Di0CKe",
+      x: 9,
+      y: 21,
+      w: 3,
+      h: 3
+    },
+    color: "#7ab4dd",
+    bgcolor: "#004272c7",
+    bgimg: "none",
+    bgsize: "cover",
+    bgpos: {
+      x: Pos.center,
+      y: Pos.center
+    },
+    bgrepeat: BGRepeat.norepeat,
+    border: "1px solid #ffffff36",
+    borderRadius: "2px",
+    action: "000000000057",
+    fontFamily: "Orbitront",
+    fontWeight: "",
+    fontSize: "13px",
+    type: "button",
+    onclickbgcolor: "#004272c7",
+    onclickcolor: "#cdd4d9",
+    onclickborder: "1px solid #ffffff36",
+    textShadow: "0 0 8px 1px black",
+    boxShadow: "0 0 8px 1px black"
+  },
+  {
+    name: "Request loading",
+    grid: {
+      i: "17Qir4IkhWia",
+      x: 9,
+      y: 15,
+      w: 3,
+      h: 6
+    },
+    color: "#7ab4dd",
+    bgcolor: "#004272c7",
+    bgimg: "none",
+    bgsize: "cover",
+    bgpos: {
+      x: Pos.center,
+      y: Pos.center
+    },
+    bgrepeat: BGRepeat.norepeat,
+    border: "1px solid #ffffff36",
+    borderRadius: "2px",
+    action: "000000000054",
+    fontFamily: "Orbitront",
+    fontWeight: "",
+    fontSize: "14px",
+    type: "button",
+    onclickbgcolor: "#004272c7",
+    onclickcolor: "#cdd4d9",
+    onclickborder: "1px solid #ffffff36",
+    textShadow: "0 0 8px 1px black",
+    boxShadow: "0 0 8px 1px black"
+  },
+  {
+    name: "Auto land/dock",
+    grid: {
+      i: "NSSDGS11xQNR",
+      x: 3,
+      y: 21,
+      w: 6,
+      h: 3
+    },
+    color: "#7ab4dd",
+    bgcolor: "#1f4058c7",
+    bgimg: "none",
+    bgsize: "cover",
+    bgpos: {
+      x: Pos.center,
+      y: Pos.center
+    },
+    bgrepeat: BGRepeat.norepeat,
+    border: "1px solid #ffffff36",
+    borderRadius: "2px",
+    action: "000000000053",
+    fontFamily: "Orbitront",
+    fontWeight: "",
+    fontSize: "14px",
+    type: "button",
+    onclickbgcolor: "#1f4058c7",
+    onclickcolor: "#cdd4d9",
+    onclickborder: "1px solid #ffffff36",
+    textShadow: "0 0 8px 1px black",
+    boxShadow: "0 0 8px 1px black"
+  },
+  {
+    name: "Exit seat",
+    grid: {
+      i: "0D0K19IlmDh4",
+      x: 8,
+      y: 0,
+      w: 4,
+      h: 4
+    },
+    color: "#7ab4dd",
+    bgcolor: "#3e3205c7",
+    bgimg: "none",
+    bgsize: "cover",
+    bgpos: {
+      x: Pos.center,
+      y: Pos.center
+    },
+    bgrepeat: BGRepeat.norepeat,
+    border: "1px solid #ffffff36",
+    borderRadius: "2px",
+    action: "000000000050",
+    fontFamily: "Orbitront",
+    fontWeight: "",
+    fontSize: "14px",
+    type: "button",
+    onclickbgcolor: "#d79a42",
+    onclickcolor: "#7ab4dd",
+    onclickborder: "1px solid #ffffff36",
+    textShadow: "0 0 8px 1px black",
+    boxShadow: "0 0 8px 1px black"
+  },
+  {
+    name: "Self destruct",
+    grid: {
+      i: "Wts5YzSBgzTp",
+      x: 9,
+      y: 8,
+      w: 3,
+      h: 6
+    },
+    color: "#7ab4dd",
+    bgcolor: "#5a0707c7",
+    bgimg: "none",
+    bgsize: "cover",
+    bgpos: {
+      x: Pos.center,
+      y: Pos.center
+    },
+    bgrepeat: BGRepeat.norepeat,
+    border: "1px solid #ffffff36",
+    borderRadius: "2px",
+    action: "000000000052",
+    fontFamily: "Orbitront",
+    fontWeight: "",
+    fontSize: "14px",
+    type: "button",
+    onclickbgcolor: "#5a0707c7",
     onclickcolor: "#7ab4dd",
     onclickborder: "1px solid #ffffff36",
     textShadow: "0 0 8px 1px black",
