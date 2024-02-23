@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { Page, GridItem, Layout } from '../types/layouts'
-import { DefaultLayouts, getBlankLayout, getBlankPage, getBlankItem } from './layoutsdefault'
-import { D2 } from './defaultExample1'
+import {  getBlankLayout, getBlankPage, getBlankItem } from './layoutsdefault'
+import { DEMOSP } from './defaultExample1'
 
 type Layouts = {
   layouts: Layout[]
@@ -50,10 +50,10 @@ export const useLayoutsStore = create<LayoutsStore>()(
       },
       resetLayouts: () => {
         set(() => ({
-          layouts: DefaultLayouts.concat(D2),
-          selectedLayout: DefaultLayouts[0],
-          selectedPage: DefaultLayouts[0].pages[0],
-          lastLayout: DefaultLayouts[0].uid
+          layouts: DEMOSP,
+          selectedLayout: DEMOSP[0],
+          selectedPage: DEMOSP[0].pages[0],
+          lastLayout: DEMOSP[0].uid
         }))
       },
       getLayout: (uid: string) => {

@@ -1,18 +1,24 @@
 import { useLayoutsStore, useOptionsStore } from '@renderer/store'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { useEffect } from 'react';
 
 const Topbar = () => {
   const { selectedLayout } = useLayoutsStore()
-
   const { options } = useOptionsStore()
-
+  let location = useLocation();
   const handleStartServer = () => {
-    console.log(selectedLayout?.name)
     window.electron.ipcRenderer.send('start:server', [selectedLayout, options])
-    console.log(options);
-    
   }
 
+  useEffect(() => {
+    return () => {
+    };
+  }, []);
+  useEffect(() => {
+    console.log('Nom de la page actuelle :', location);
+    return () => {
+    };
+  }, [location]);
   return (
     <nav id="topbar">
       <Link className="navbtn" to="/">
@@ -24,9 +30,11 @@ const Topbar = () => {
       <Link className="navbtn" to="/keybinds">
         keybinds
       </Link>
-      <button id="startserver" onClick={() => handleStartServer()}>
-        START
-      </button>
+      {location.pathname === "/" &&
+        <button id="startserver" onClick={() => handleStartServer()}>
+          START
+        </button>
+      }
     </nav>
   )
 }

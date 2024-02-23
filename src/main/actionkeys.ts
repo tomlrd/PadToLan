@@ -9,9 +9,14 @@ const intervalIds: any = []
 
 ipcMain.on('action:key', async (_e, [args, _block]) => {
 
-  const keyString = args.key
+  
+  const keyString = args.keybind
   const keyM1 = args.modifiers[0]
   const keyM2 = args.modifiers[1]
+
+  console.log('______');
+  console.log(keyString);
+  
 
   try {
     let keysToPress: any = []
@@ -35,35 +40,35 @@ ipcMain.on('action:key', async (_e, [args, _block]) => {
       keysToPress.unshift(Key[keyM2])
     }
 
-    switch (true) {
-      case args.repeat === 'infinite':
-      case Number(args.repeat) > 1:
-        createInterval(keysToPress, args)
-        break
-      default:
-        if (args.doubletap === true) {
-          doubletap(keysToPress)
-          return
-        } else if (args.hold === true) {
-          hold(keysToPress)
-          return
+    if (args.repeat === 'infinite' || Number(args.repeat) > 1) {
+      createInterval(keysToPress, args)
+    } else {
+      if (args.doubletap === true) {
+        doubletap(keysToPress)
+      } else if (args.hold === true) {
+        hold(keysToPress)
+      } else {
+        console.log('la');
+        const spec = await handleSpecial(keysToPress[0])
+        if (spec) {
+          //a verif
+        console.log('1');
+          
+          await keyboard.pressKey(keysToPress[0])
+          await keyboard.pressKey(keysToPress[1])
+          await keyboard.releaseKey(keysToPress[1])
+          await keyboard.releaseKey(keysToPress[0])
         } else {
-          console.log('la');
-          const spec = await handleSpecial(keysToPress[0])
-          if (spec) {
-            //a verif
-            await keyboard.pressKey(keysToPress[0])
-            await keyboard.pressKey(keysToPress[1])
-            await keyboard.releaseKey(keysToPress[1])
-            await keyboard.releaseKey(keysToPress[0])
-          } else {
-            await keyboard.pressKey(...keysToPress)
-            await keyboard.releaseKey(...keysToPress)
-          }
+        console.log('2');
+
+          await keyboard.pressKey(...keysToPress)
+          await keyboard.releaseKey(...keysToPress)
         }
-        console.log(keysToPress)
-        break
+      }
+
+      console.log(keysToPress)
     }
+
   } catch (error) {
     console.log('err', error)
   }

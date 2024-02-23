@@ -3,8 +3,7 @@ import { Page, GridItem } from '../types/layouts'
 import { useLayoutsStore } from '../store'
 import GridLayout from 'react-grid-layout'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import PowerTriangle from './Triangle'
-//import path from 'path'
+//import PowerTriangle from './Triangle'
 
 function LayoutDisplay({ }: {}): JSX.Element {
   const { updateItem, selectedLayout, selectedPage, selectedItem, getPage, getItem } =
@@ -13,6 +12,7 @@ function LayoutDisplay({ }: {}): JSX.Element {
     selectedLayout?.pages.findIndex((page) => page.uid === selectedPage?.uid) || 0
   )
   const [activeTab, setActiveTab] = useState<number>(pageI)
+  const [devpath, setDevPath] = useState<string>("")
 
   const handleChangePage = (_event: any, index: number, _last: any) => {
     const selectedPageUid = selectedLayout?.pages[index].uid
@@ -45,6 +45,13 @@ function LayoutDisplay({ }: {}): JSX.Element {
     }
   }, [selectedPage])
 
+  useEffect(() => {
+    if (window.api.isdev === true) {
+      setDevPath(`url("file:///${window.api.localappdata}`);
+    }
+
+  }, [])
+
   return (
     <div
       id="border"
@@ -56,7 +63,7 @@ function LayoutDisplay({ }: {}): JSX.Element {
       <div
         id="layoutdisplay"
         style={{
-          backgroundImage: `url("file:///../${selectedPage?.pageConfig.bgimg}")`,
+          backgroundImage: window.api.isdev === false ? `url("file:///../${selectedPage?.pageConfig.bgimg}")` : `${devpath}/${selectedPage?.pageConfig.bgimg}`,
           backgroundRepeat: selectedPage?.pageConfig.bgrepeat,
           backgroundPositionX: selectedPage?.pageConfig.bgpos.x,
           backgroundPositionY: selectedPage?.pageConfig.bgpos.y,
@@ -81,7 +88,7 @@ function LayoutDisplay({ }: {}): JSX.Element {
           >
             <div
               style={{
-                backgroundImage: `url("file:///../${selectedPage?.pageListConfig.bgimg}")`,
+                backgroundImage: window.api.isdev === false ? `url("file:///../${selectedPage?.pageListConfig.bgimg}")` : `${devpath}/${selectedPage?.pageListConfig.bgimg}`,
                 backgroundRepeat: selectedPage?.pageListConfig.bgrepeat,
                 backgroundPositionX: selectedPage?.pageListConfig.bgpos.x,
                 backgroundPositionY: selectedPage?.pageListConfig.bgpos.y,
@@ -99,7 +106,7 @@ function LayoutDisplay({ }: {}): JSX.Element {
                 {selectedLayout?.pages.map((page: Page, index) => (
                   <Tab
                     style={{
-                      backgroundImage: `url("file:///../${page.pageItemConfig.bgimg}")`,
+                      backgroundImage: window.api.isdev === false ? `url("file:///../${page.pageItemConfig.bgimg}")` : `${devpath}/${page.pageItemConfig.bgimg}`,
                       backgroundSize: page.pageItemConfig.bgsize,
                       backgroundRepeat: page.pageItemConfig.bgrepeat,
                       backgroundPositionX: page.pageItemConfig.bgpos.x,
@@ -165,13 +172,13 @@ function LayoutDisplay({ }: {}): JSX.Element {
                         backgroundPositionX: item.bgpos.x,
                         backgroundPositionY: item.bgpos.y,
                         backgroundSize: item.bgsize,
-                        backgroundImage: `url("file:///../${item.bgimg}")`,
+                        backgroundImage: window.api.isdev === false ? `url("file:///../${item.bgimg}")` : `${devpath}/${item.bgimg}`,
                         borderRadius: item.borderRadius,
                         textShadow: item.textShadow,
                         boxShadow: item.type === 'button' ? item.boxShadow : ''
                       }}
                     >
-{/*                       {item.type === "triangle" &&
+                      {/*                       {item.type === "triangle" &&
                         <div className='btninn'>
                           <PowerTriangle/>
                         </div>

@@ -30,7 +30,11 @@ function KeyBinds(): JSX.Element {
       getKeybindList(lastkblist)
     }
 
-    return () => { }
+    return () => { 
+      if (lastkblist) {
+        getKeybindList(lastkblist)
+      }
+    }
   }, [])
 
   return (

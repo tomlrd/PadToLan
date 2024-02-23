@@ -2,7 +2,7 @@ import express, { Express } from 'express'
 //import {app} from 'electron'
 /*import helmet from 'helmet'; */
 import path from 'path'
-import fs from 'fs'
+//import fs from 'fs'
 import { mainWindow } from '../main'
 import { ipcMain } from 'electron'
 import { createHttpTerminator } from 'http-terminator'
@@ -75,27 +75,34 @@ export function createServer([layout, options]): void {
     next()
   })
 
-
+  /*   appE.use((req, res, next) => {
+      console.log(`${req.ip} ask ${req.originalUrl}`);
+      res.on('finish', () => {
+        console.log(`deco ${req.ip} from ${req.originalUrl}`);
+      });
+    
+      next();
+    });
+   */
   appE.use('/images/:imageUrl', (req, res) => {
     let imageUrl = req.originalUrl
     if (imageUrl.indexOf('/images/') === 0) {
       imageUrl = imageUrl.slice('/images/'.length)
     }
-    fs.access(path.resolve('images', imageUrl), fs.constants.F_OK, (err) => {
-      if (err) {
-        res.status(404).send(`img not found ${path.resolve(process.resourcesPath, 'PadApp', imageUrl)}`)
-      } else {
-        if (is.dev) {
-          console.log(path.resolve('images', imageUrl));
-          res.sendFile(path.resolve(process.resourcesPath, 'PadApp', imageUrl))
-          return
-        }
-        res.sendFile(path.resolve(process.resourcesPath, 'PadApp', imageUrl))
-        console.log(path.resolve(process.resourcesPath, 'PadApp', imageUrl));
 
-        //path.join(process.resourcesPath, 'PadApp', 'images', imageUrl)
-      }
-    })
+    if (is.dev) {
+      console.log('yo');
+      
+      console.log(path.resolve("build",imageUrl));
+      res.sendFile(path.resolve("build",imageUrl))
+      return
+    }
+    res.sendFile(path.resolve(process.resourcesPath, 'PadApp', imageUrl))
+    console.log(path.resolve(process.resourcesPath, 'PadApp', imageUrl));
+
+    //path.join(process.resourcesPath, 'PadApp', 'images', imageUrl)
+
+
   })
 
 
@@ -104,6 +111,8 @@ export function createServer([layout, options]): void {
 
     if (is.dev) {
       console.log('dev');
+
+      console.log(path.resolve('index.html'));
 
       res.sendFile(path.resolve('index.html'))
       return
@@ -128,6 +137,8 @@ export function createServer([layout, options]): void {
         }
       })();
     } else {
+      console.log('ok');
+
       mainWindow.webContents.send('key', [req.params.id, options])
       res.status(200).end();
     }
@@ -145,4 +156,6 @@ export function createServer([layout, options]): void {
     await mainWindow.webContents.send('serverstatus', false)
     await httpTerminator.terminate()
   })
+
+
 }

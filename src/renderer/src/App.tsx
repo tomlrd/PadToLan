@@ -1,27 +1,32 @@
-import { useEffect, useState } from 'react'
-import { HashRouter as Router, Route, Routes } from 'react-router-dom'
-
-import ServerModal from './components/ServerModal'
-import Home from './pages/Home'
-import Options from './pages/Options'
-import Navigation from './components/Topbar'
-import KeyBinds from './pages/KeyBinds'
+import { useEffect, useState } from 'react';
+import { HashRouter as Router, Route, Routes  } from 'react-router-dom';
+import ServerModal from './components/ServerModal';
+import Home from './pages/Home';
+import Options from './pages/Options';
+import Navigation from './components/Topbar';
+import KeyBinds from './pages/KeyBinds';
 
 function App(): JSX.Element {
-  const [serverIsRunning, setServerIsRunning] = useState<boolean>(false)
-  const [server, setServer] = useState<any>()
-  useEffect(() => {
-    window.electron.ipcRenderer.on('serverstatus', (_e, server) => {
-      if (server !== false) {
-        setServerIsRunning(true)
-        setServer(server)
-      } else {
-        setServerIsRunning(false)
-        setServer(null)
-      }
-    })
-  }, [])
+  const [serverIsRunning, setServerIsRunning] = useState<boolean>(false);
+  const [server, setServer] = useState<any>();
 
+  useEffect(() => {
+    const serverStatusListener = (_e, server) => {
+      if (server !== false) {
+        setServerIsRunning(true);
+        setServer(server);
+      } else {
+        setServerIsRunning(false);
+        setServer(null);
+      }
+    };
+
+    window.electron.ipcRenderer.on('serverstatus', serverStatusListener);
+
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('serverstatus');
+    };
+  }, []);
   return (
     <Router>
       {serverIsRunning && <ServerModal server={server} />}
@@ -32,7 +37,7 @@ function App(): JSX.Element {
         <Route path="/keybinds" element={<KeyBinds />} />
       </Routes>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -82,7 +82,7 @@ export function getBlankItem(): GridItem {
     border: 'none',
     borderRadius: 'none',
     action: 'none',
-    fontFamily: 'Roboto',
+    fontFamily: 'Orbitront',
     fontWeight: 'normal',
     fontSize: '15px',
     type: 'button',

@@ -34,20 +34,20 @@ function Home(): JSX.Element {
 
   useEffect(() => {
     console.log(window.api.resourcesPath);
-    
+
     window.electron.ipcRenderer.on('firstrun', (_e, isFirstRun) => {
       if (isFirstRun === true) {
         resetLayouts()
         resetKeybindList()
       }
-      if (lastLayout) {
-        getLayout(lastLayout)
-      }
-      if (lastkblist) {
-        getKeybindList(lastkblist)
-      }
-    })
 
+    })
+    if (lastLayout) {
+      getLayout(lastLayout)
+    }
+    if (lastkblist) {
+      getKeybindList(lastkblist)
+    }
     window.electron.ipcRenderer.on('minimizeInNotif', (_e, _arg) => {
       window.electron.ipcRenderer.send('return:minimizeInNotif', options.general.minimizeInNotif)
     })
@@ -71,29 +71,26 @@ function Home(): JSX.Element {
           break
       }
     })
-
-    window.electron.ipcRenderer.on('key', async (_e, key) => {
+    const keyHandlerKey = (_e: any, key: string[]) => {
       console.log(key)
       console.log(kbselectedList)
 
+      if (!lastkblist && !kbselectedList) {
+        return
+      }
+
+      
       const foundKBL = keybindlist?.find((kb) => kb.uid === lastkblist)
       const foundAction = foundKBL?.keybinds.find((kb) => kb.uid === key[0])
-      console.log(foundAction)
 
       if (foundAction) {
-        const action = {
-          uid: foundAction.uid,
-          name: foundAction.name,
-          key: foundAction.keybind,
-          modifiers: foundAction.modifiers,
-          doubletap: foundAction.doubletap,
-          hold: foundAction.hold,
-          repeat: foundAction.repeat,
-          delayRepeat: foundAction.delayRepeat
-        }
-        window.electron.ipcRenderer.send('action:key', [action, options.general.blockToFile])
+        console.log('meyh');
+        
+        window.electron.ipcRenderer.send('action:key', [{...foundAction}, options.general.blockToFile])
       }
-    })
+    };
+
+    window.electron.ipcRenderer.on('key', keyHandlerKey);
 
     if (options.general.serverwhenstart === true) {
       if (lastLayout) {
@@ -104,8 +101,14 @@ function Home(): JSX.Element {
       window.electron.ipcRenderer.send('forceminimize', options.general.minimizeInNotif)
     }
 
-    return () => {}
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('key');
+    }
   }, [])
+
+  useEffect(() => {
+
+  }, [kbselectedList])
 
   useEffect(() => {
     setlayoutW(selectedLayout?.width)
@@ -114,7 +117,7 @@ function Home(): JSX.Element {
     selectedLayout?.pages.forEach(_el => {
       //console.log('pagesitems:', JSON.stringify(el.items));
     });
-    
+
     console.log(JSON.stringify(selectedLayout?.pages[0].items))
   }, [selectedLayout])
 

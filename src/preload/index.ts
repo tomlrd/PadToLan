@@ -1,11 +1,25 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-//import { is } from '@electron-toolkit/utils'
+import path from 'path';
+
+console.log(process.env);
+console.log(electronAPI.process);
+const isDev = electronAPI.process.env.NODE_ENV_ELECTRON_VITE === "development" ? true : false
+console.log(isDev);
+console.log(process);
+
+const appDataPath = electronAPI.process.env.LOCALAPPDATA;
+const appResourcesPath = path.resolve(appDataPath ? appDataPath : "", "Programs", "padtolan", "resources", "PadApp");
+console.log(appResourcesPath);
+console.log(__dirname);
 
 // Custom APIs for renderer
 const api = {
-  resourcesPath: process.resourcesPath
-}
+  resourcesPath: process.resourcesPath,
+  isdev: isDev,
+  localappdata: appResourcesPath.replace(/\\/g, "/")
+};
+
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
