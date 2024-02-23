@@ -47,8 +47,8 @@ function LayoutDisplay({ }: {}): JSX.Element {
 
   useEffect(() => {
     if (window.api.isdev === true) {
-      setDevPath(`url("file:///${window.api.localappdata}`);
     }
+    setDevPath(`url("file:///${window.api.localappdata}`);
 
   }, [])
 
@@ -63,7 +63,7 @@ function LayoutDisplay({ }: {}): JSX.Element {
       <div
         id="layoutdisplay"
         style={{
-          backgroundImage: window.api.isdev === false ? `url("file:///../${selectedPage?.pageConfig.bgimg}")` : `${devpath}/${selectedPage?.pageConfig.bgimg}`,
+          backgroundImage: `${devpath}/${selectedPage?.pageConfig.bgimg}`,
           backgroundRepeat: selectedPage?.pageConfig.bgrepeat,
           backgroundPositionX: selectedPage?.pageConfig.bgpos.x,
           backgroundPositionY: selectedPage?.pageConfig.bgpos.y,
@@ -88,7 +88,7 @@ function LayoutDisplay({ }: {}): JSX.Element {
           >
             <div
               style={{
-                backgroundImage: window.api.isdev === false ? `url("file:///../${selectedPage?.pageListConfig.bgimg}")` : `${devpath}/${selectedPage?.pageListConfig.bgimg}`,
+                backgroundImage: `${devpath}/${selectedPage?.pageListConfig.bgimg}`,
                 backgroundRepeat: selectedPage?.pageListConfig.bgrepeat,
                 backgroundPositionX: selectedPage?.pageListConfig.bgpos.x,
                 backgroundPositionY: selectedPage?.pageListConfig.bgpos.y,
@@ -106,7 +106,7 @@ function LayoutDisplay({ }: {}): JSX.Element {
                 {selectedLayout?.pages.map((page: Page, index) => (
                   <Tab
                     style={{
-                      backgroundImage: window.api.isdev === false ? `url("file:///../${page.pageItemConfig.bgimg}")` : `${devpath}/${page.pageItemConfig.bgimg}`,
+                      backgroundImage: `${devpath}/${page.pageItemConfig.bgimg}`,
                       backgroundSize: page.pageItemConfig.bgsize,
                       backgroundRepeat: page.pageItemConfig.bgrepeat,
                       backgroundPositionX: page.pageItemConfig.bgpos.x,
@@ -172,7 +172,7 @@ function LayoutDisplay({ }: {}): JSX.Element {
                         backgroundPositionX: item.bgpos.x,
                         backgroundPositionY: item.bgpos.y,
                         backgroundSize: item.bgsize,
-                        backgroundImage: window.api.isdev === false ? `url("file:///../${item.bgimg}")` : `${devpath}/${item.bgimg}`,
+                        backgroundImage: `${devpath}/${item.bgimg}`,
                         borderRadius: item.borderRadius,
                         textShadow: item.textShadow,
                         boxShadow: item.type === 'button' ? item.boxShadow : ''
