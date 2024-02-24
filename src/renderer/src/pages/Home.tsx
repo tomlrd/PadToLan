@@ -216,7 +216,11 @@ function Home(): JSX.Element {
                     />
                   </div>
                 </div>
-                <label style={{ position: 'absolute', margin: '10px' }}>
+                <div style={{
+                  display:'flex', justifyContent:'space-between', position:'absolute'
+                }}>
+
+                <label style={{ margin: '10px' }}>
                   <input
                     type="checkbox"
                     checked={selectedLayout.nosleep}
@@ -224,6 +228,15 @@ function Home(): JSX.Element {
                   />
                   <div>nosleep</div>
                 </label>
+                <label style={{ margin: '10px' }}>
+                  <input
+                    type="checkbox"
+                    checked={selectedLayout.nonav}
+                    onChange={(_e) => updateLayout('nonav', !selectedLayout.nonav)}
+                  />
+                  <div>nonav</div>
+                </label>
+                </div>
               </div>
             )}
           </div>

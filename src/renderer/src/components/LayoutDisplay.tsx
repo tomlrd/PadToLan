@@ -19,7 +19,7 @@ function LayoutDisplay({ }: {}): JSX.Element {
     if (selectedPageUid) {
       setPageI(index)
       getPage(selectedPageUid)
-      setActiveTab(index) // Mettre à jour l'onglet actif
+      setActiveTab(index) 
     }
   }
 
@@ -105,7 +105,8 @@ function LayoutDisplay({ }: {}): JSX.Element {
                 backgroundRepeat: selectedPage?.pageListConfig.bgrepeat,
                 backgroundPositionX: selectedPage?.pageListConfig.bgpos.x,
                 backgroundPositionY: selectedPage?.pageListConfig.bgpos.y,
-                backgroundSize: selectedPage?.pageListConfig.bgsize
+                backgroundSize: selectedPage?.pageListConfig.bgsize,
+                display: selectedLayout?.nonav === true ? 'none' : ''
               }}
             >
               <TabList

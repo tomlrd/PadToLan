@@ -20,7 +20,8 @@ export function getBlankLayout(): Layout {
     bindedKbList: null,
     name: 'New Layout',
     pages: [getBlankPage(), getBlankPage(), getBlankPage()],
-    nosleep: false
+    nosleep: false,
+    nonav: false
   }
 }
 

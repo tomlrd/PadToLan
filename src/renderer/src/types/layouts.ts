@@ -107,4 +107,5 @@ export interface Layout {
   name: string
   pages: Page[]
   nosleep: boolean
+  nonav: boolean
 }

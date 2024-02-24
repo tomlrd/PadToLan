@@ -167,7 +167,7 @@ function App() {
           backgroundPositionX: selectedPage.pageConfig.bgpos.x,
           backgroundPositionY: selectedPage.pageConfig.bgpos.y,
           backgroundSize: selectedPage.pageConfig.bgsize,
-          backgroundImage: `url("images/${selectedPage.pageConfig.bgimg}")`
+          backgroundImage: `url("images/${selectedPage.pageConfig.bgimg}")`,
         }}
           {...handlers}
         >
@@ -188,6 +188,7 @@ function App() {
                   justifyContent: selectedPage.pageListConfig.justifyitems,
                   margin: selectedPage.pageListConfig.margin,
                   padding: selectedPage.pageListConfig.padding,
+                  display: layout.nonav === true ? 'none' : ''
                 }}
                 >
                   {layout.pages.map((page: any, index: number) => (

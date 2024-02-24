@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { Page, GridItem, Layout } from '../types/layouts'
-import {  getBlankLayout, getBlankPage, getBlankItem } from './layoutsdefault'
+import { getBlankLayout, getBlankPage, getBlankItem } from './layoutsdefault'
 import { DEMOSP } from './defaultExample1'
 
 type Layouts = {
@@ -93,14 +93,14 @@ export const useLayoutsStore = create<LayoutsStore>()(
           return
         }
 
-        if ( type === 'triangle') {
+        if (type === 'triangle') {
           newItem = { ...newItem, type: 'triangle' }
-        } else if ( type === 'button') {
+        } else if (type === 'button') {
           newItem = { ...newItem, type: 'button' }
-        } else if ( type === 'img/text') {
+        } else if (type === 'img/text') {
           newItem = { ...newItem, type: 'img/text' }
         }
-        
+
         console.log(newItem)
 
         const updatedPageItems = [...selectedPage.items, newItem]
@@ -537,6 +537,9 @@ export const useLayoutsStore = create<LayoutsStore>()(
             break
           case 'nosleep':
             updatedLayout = { ...selectedLayout, nosleep: data }
+            break
+          case 'nonav':
+            updatedLayout = { ...selectedLayout, nonav: data }
             break
           default:
             break
