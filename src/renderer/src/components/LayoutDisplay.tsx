@@ -45,12 +45,25 @@ function LayoutDisplay({ }: {}): JSX.Element {
     }
   }, [selectedPage])
 
-  useEffect(() => {
-    if (window.api.isdev === true) {
-    }
-    setDevPath(`url("file:///${window.api.localappdata}`);
 
-  }, [])
+  useEffect(() => {
+    // bad fix
+    if (window.api.isdev === true) {
+      console.log(selectedLayout);
+      if (selectedLayout?.uid === "000001L1SCEx") {
+        setDevPath(`url("file:///${window.api.localappdata}`);
+      } else {
+        setDevPath(`url("file:///`);
+      }
+    } else {
+      if (selectedLayout?.uid === "000001L1SCEx") {
+        setDevPath(`url("file:///${window.api.localappdata}`);
+      } else {
+        setDevPath(`url("file:///`);
+      }
+    }
+
+  }, [selectedLayout])
 
   return (
     <div
