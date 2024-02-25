@@ -79,14 +79,14 @@ function Home(): JSX.Element {
         return
       }
 
-      
+
       const foundKBL = keybindlist?.find((kb) => kb.uid === lastkblist)
       const foundAction = foundKBL?.keybinds.find((kb) => kb.uid === key[0])
 
       if (foundAction) {
         console.log('meyh');
-        
-        window.electron.ipcRenderer.send('action:key', [{...foundAction}, options.general.blockToFile])
+
+        window.electron.ipcRenderer.send('action:key', [{ ...foundAction }, options.general.blockToFile])
       }
     };
 
@@ -217,25 +217,25 @@ function Home(): JSX.Element {
                   </div>
                 </div>
                 <div style={{
-                  display:'flex', justifyContent:'space-between', position:'absolute'
+                  display: 'flex', justifyContent: 'space-between', position: 'absolute'
                 }}>
 
-                <label style={{ margin: '10px' }}>
-                  <input
-                    type="checkbox"
-                    checked={selectedLayout.nosleep}
-                    onChange={(_e) => updateLayout('nosleep', !selectedLayout.nosleep)}
-                  />
-                  <div>nosleep</div>
-                </label>
-                <label style={{ margin: '10px' }}>
-                  <input
-                    type="checkbox"
-                    checked={selectedLayout.nonav}
-                    onChange={(_e) => updateLayout('nonav', !selectedLayout.nonav)}
-                  />
-                  <div>nonav</div>
-                </label>
+                  <label style={{ margin: '10px' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedLayout.nosleep}
+                      onChange={(_e) => updateLayout('nosleep', !selectedLayout.nosleep)}
+                    />
+                    <div>nosleep</div>
+                  </label>
+                  <label style={{ margin: '10px' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedLayout.nonav}
+                      onChange={(_e) => updateLayout('nonav', !selectedLayout.nonav)}
+                    />
+                    <div>nonav</div>
+                  </label>
                 </div>
               </div>
             )}
@@ -294,8 +294,12 @@ function Home(): JSX.Element {
                   {/* <option value="triangle">TRIANGLE</option> */}
                 </select>
                 <ConfigPage />
-                <ConfigPageList />
-                <ConfigPageItem />
+                {selectedLayout?.nonav === false &&
+                  <>
+                    <ConfigPageList />
+                    <ConfigPageItem />
+                  </>
+                }
               </div>
             )}
           </div>

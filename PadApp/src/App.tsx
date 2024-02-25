@@ -172,7 +172,7 @@ function App() {
           {...handlers}
         >
           <div id='layoutdisplaybgcolor' style={{
-            backgroundColor: selectedPage?.pageConfig.bgcolor,
+            background: selectedPage?.pageConfig.bgcolor,
             height: "inherit"
           }}>
             <Tabs selectedIndex={selectedPageI} onSelect={(index) => handleChangePage(index)}>
@@ -248,7 +248,7 @@ function App() {
                             backgroundPositionX: item.bgpos.x,
                             backgroundPositionY: item.bgpos.y,
                             backgroundSize: item.bgsize,
-                            backgroundImage: `url("file:///../${item.bgimg}")`,
+                            backgroundImage: `url("images/${item.bgimg}")`,
                             borderRadius: item.borderRadius,
                             textShadow: item.textShadow,
                             boxShadow: item.type === 'button' ? item.boxShadow : ''
@@ -288,7 +288,7 @@ function App() {
                                 fontFamily: item.fontFamily,
                                 fontWeight: item.fontWeight,
                                 fontSize: item.fontSize,
-                                border: 'none'
+                                border: item.border
                               }}
                               onClick={(e) => handleClick(e, item)}
                             >

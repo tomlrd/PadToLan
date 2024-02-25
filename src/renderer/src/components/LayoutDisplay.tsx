@@ -86,7 +86,7 @@ function LayoutDisplay({ }: {}): JSX.Element {
         <div
           id="layoutdisplaybgcolor"
           style={{
-            backgroundColor: selectedPage?.pageConfig.bgcolor,
+            background: selectedPage?.pageConfig.bgcolor,
             height: 'inherit'
           }}
         >
