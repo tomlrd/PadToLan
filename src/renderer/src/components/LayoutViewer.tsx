@@ -9,7 +9,7 @@ interface LayoutViewerProps {
 }
 
 const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
-  const page = layout.pages[0] // Affiche la première page du layout
+  const page = layout.pages[0] // Par défaut, afficher la première page
   const items = page?.items || []
 
   return (
@@ -30,8 +30,11 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
         cols={12}
         rowHeight={30}
         width={layout.width}
-        isDraggable={false}
-        isResizable={false}
+        isDraggable
+        isResizable
+        onLayoutChange={(newLayout) => {
+          console.log(newLayout) // Gérer les changements de layout ici
+        }}
       >
         {items.map((item) => (
           <div

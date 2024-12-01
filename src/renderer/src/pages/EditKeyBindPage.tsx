@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import useKeyBindStore from '../store/useKeyBindStore'
+import { useKeyBindStore } from '../store/useKeyBindStore'
 import { KeyBind, Modifier, KeyBindList } from '../types/keybinds'
-import useLayoutStore from '../store/useLayoutStore'
+import { useLayoutStore } from '../store/useLayoutStore'
 import { CirclePlus, CircleX } from 'lucide-react'
 
 const EditKeyBindPage: React.FC = () => {
   const { keyBindLists, addDefaultKeyBindList, updateKeyBindList, addDefaultKeyBind } =
     useKeyBindStore()
-  const { selectedLayout } = useLayoutStore()
+  const { getSelectedLayout } = useLayoutStore()
+  const selectedLayout = getSelectedLayout()
   const [currentKeyBindList, setCurrentKeyBindList] = useState<KeyBindList | null>(null)
 
   useEffect(() => {
@@ -94,7 +95,7 @@ const EditKeyBindPage: React.FC = () => {
 
               <div className="flex flex-wrap items-center space-x-2">
                 {keybind.modifiers.map((modifier, index) => (
-                  <div key={index} className="flex items-center  border  rounded-md bg-gray-50">
+                  <div key={index} className="flex items-center border p-2 rounded-md bg-gray-50">
                     <select
                       value={modifier}
                       onChange={(e) => {
@@ -115,8 +116,8 @@ const EditKeyBindPage: React.FC = () => {
                     </select>
 
                     <CircleX
-                      size={30}
-                      className="text-red-500 cursor-pointer px-2"
+                      size={20}
+                      className="text-red-500 cursor-pointer ml-2"
                       onClick={() => {
                         const updatedModifiers = keybind.modifiers.filter((_, i) => i !== index)
                         handleSaveKeyBind(keybind.uid, {
@@ -137,10 +138,10 @@ const EditKeyBindPage: React.FC = () => {
                             | [Modifier]
                         })
                       }
-                      className="flex items-center space-x-2"
+                      className="flex items-center"
                     >
-                      <CirclePlus size={13} className="cursor-pointer text-green-500" />
-                      <span>Add Modifier</span>
+                      <CirclePlus size={16} className="text-green-500 mr-1" />
+                      Add Modifier
                     </button>
                   </div>
                 )}
