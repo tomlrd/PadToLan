@@ -2,31 +2,21 @@ export enum BGSize {
   cover = 'cover',
   contain = 'contain'
 }
-export enum Pos {
-  right = 'right',
-  left = 'left',
-  bottom = 'bottom',
-  top = 'top',
-  center = 'center'
-}
-export enum Justify {
-  start = 'flex-start',
-  end = 'flex-end',
-  evenly = 'space-evenly',
-  between = 'space-between',
-  around = 'space-around',
-  center = 'center'
-}
+export type Pos = 'right' | 'left' | 'bottom' | 'top' | 'center'
+
+export type Justify =
+  | 'flex-start'
+  | 'flex-end'
+  | 'space-evenly'
+  | 'space-between'
+  | 'space-around'
+  | 'center'
 export interface BGPos {
-  x: Pos.left | Pos.right | Pos.center
-  y: Pos.bottom | Pos.top | Pos.center
+  x: 'left' | 'right' | 'center'
+  y: 'bottom' | 'top' | 'center'
 }
-export enum BGRepeat {
-  repeat = 'repeat',
-  norepeat = 'no-repeat',
-  repeatX = 'repeat-x',
-  repeatY = 'repeat-y'
-}
+export type BGRepeat = 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
+
 export interface GridItem {
   grid: {
     i: string

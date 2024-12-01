@@ -25,6 +25,7 @@
     "@electron-toolkit/utils": "^3.0.0",
     "react-grid-layout": "^1.5.0",
     "react-router-dom": "^7.0.1",
+    "uuid": "^11.0.3",
     "zustand": "^5.0.1"
   },
   "devDependencies": {
