@@ -15,8 +15,6 @@ export interface BGPos {
   x: 'left' | 'right' | 'center'
   y: 'bottom' | 'top' | 'center'
 }
-export type BGRepeat = 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
-
 export interface GridItem {
   grid: {
     i: string
@@ -31,7 +29,7 @@ export interface GridItem {
   bgimg: string
   bgsize: string
   bgpos: BGPos
-  bgrepeat: BGRepeat
+  bgrepeat: 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
   border: string
   borderRadius: string
   action: string
@@ -55,14 +53,14 @@ export interface Page {
     bgimg: string
     bgsize: string
     bgpos: BGPos
-    bgrepeat: BGRepeat
+    bgrepeat: 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
   }
   pageListConfig: {
     bgcolor: string
     bgimg: string
     bgsize: string
     bgpos: BGPos
-    bgrepeat: BGRepeat
+    bgrepeat: 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
     margin: string
     padding: string
     justifyitems: Justify
@@ -73,7 +71,7 @@ export interface Page {
     bgimg: string
     bgsize: string
     bgpos: BGPos
-    bgrepeat: BGRepeat
+    bgrepeat: 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
     border: string
     borderRadius: string
     margin: string

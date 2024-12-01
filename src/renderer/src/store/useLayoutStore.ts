@@ -8,19 +8,39 @@ interface LayoutStore {
   layouts: Layout[]
   selectedLayoutUid: string | null
   selectedPageUid: string | null
+  selectedButtonUid: string | null
 
   // Sélecteurs
   selectLayout: (uid: string) => void
   selectPage: (uid: string) => void
+  selectButton: (uid: string) => void
 
   // Modifications
   addDefaultLayout: () => void
   deleteLayout: (uid: string) => void
+  updateLayout: (updatedLayout: Partial<Layout>) => void
+  addPage: (layoutUid: string) => void
+  deletePage: (layoutUid: string, pageUid: string) => void
+  updatePageConfig: (
+    layoutUid: string,
+    pageUid: string,
+    updatedConfig: Partial<Page['pageConfig']>
+  ) => void
+  updatePageListConfig: (
+    layoutUid: string,
+    pageUid: string,
+    updatedConfig: Partial<Page['pageListConfig']>
+  ) => void
+  updatePageItemConfig: (
+    layoutUid: string,
+    pageUid: string,
+    updatedConfig: Partial<Page['pageItemConfig']>
+  ) => void
   updatePageLayout: (layoutUid: string, pageUid: string, updatedItems: GridItem[]) => void
   updateButton: (
     layoutUid: string,
     pageUid: string,
-    buttonId: string,
+    buttonUid: string,
     updatedProperties: Partial<GridItem>
   ) => void
 
@@ -35,6 +55,7 @@ export const useLayoutStore = create<LayoutStore>()(
       layouts: [],
       selectedLayoutUid: null,
       selectedPageUid: null,
+      selectedButtonUid: null,
 
       // Sélection d'un layout
       selectLayout: (uid) => {
@@ -50,12 +71,24 @@ export const useLayoutStore = create<LayoutStore>()(
         set({ selectedPageUid: uid })
       },
 
+      // Sélection d'un bouton
+      selectButton: (uid) => {
+        set({ selectedButtonUid: uid })
+      },
+
       // Création d'un layout par défaut
       addDefaultLayout: () => {
-        const newLayout = getDefaultLayout()
+        const defaultLayout = getDefaultLayout()
+        const newLayout: Layout = {
+          ...defaultLayout,
+          uid: uuidv4(),
+          name: `Layout ${uuidv4().slice(0, 8)}`
+        }
+
         set((state) => ({
           layouts: [...state.layouts, newLayout],
-          selectedLayoutUid: newLayout.uid // Sélection automatique
+          selectedLayoutUid: newLayout.uid,
+          selectedPageUid: newLayout.pages[0]?.uid || null
         }))
       },
 
@@ -72,42 +105,139 @@ export const useLayoutStore = create<LayoutStore>()(
         })
       },
 
-      // Mise à jour des items d'une page
-      updatePageLayout: (layoutUid, pageUid, updatedItems) => {
-        set((state) => ({
-          layouts: state.layouts.map((layout) =>
-            layout.uid === layoutUid
-              ? {
-                  ...layout,
-                  pages: layout.pages.map((page) =>
-                    page.uid === pageUid ? { ...page, items: updatedItems } : page
-                  )
-                }
-              : layout
+      // Mise à jour d'un layout
+      updateLayout: (updatedLayout) => {
+        set((state) => {
+          const layouts = state.layouts.map((layout) =>
+            layout.uid === updatedLayout.uid ? { ...layout, ...updatedLayout } : layout
           )
-        }))
+          return { layouts }
+        })
+      },
+
+      // Ajout d'une page
+      addPage: (layoutUid) => {
+        set((state) => {
+          const layouts = state.layouts.map((layout) => {
+            if (layout.uid === layoutUid) {
+              const newPage: Page = {
+                ...getDefaultLayout().pages[0],
+                uid: uuidv4(),
+                name: `Nouvelle Page ${layout.pages.length + 1}`
+              }
+              return { ...layout, pages: [...layout.pages, newPage] }
+            }
+            return layout
+          })
+          return { layouts }
+        })
+      },
+
+      // Suppression d'une page
+      deletePage: (layoutUid, pageUid) => {
+        set((state) => {
+          const layouts = state.layouts.map((layout) => {
+            if (layout.uid === layoutUid) {
+              const updatedPages = layout.pages.filter((page) => page.uid !== pageUid)
+              return { ...layout, pages: updatedPages }
+            }
+            return layout
+          })
+          return { layouts }
+        })
+      },
+
+      // Mise à jour de pageConfig
+      updatePageConfig: (layoutUid, pageUid, updatedConfig) => {
+        set((state) => {
+          const layouts = state.layouts.map((layout) => {
+            if (layout.uid === layoutUid) {
+              const pages = layout.pages.map((page) =>
+                page.uid === pageUid
+                  ? { ...page, pageConfig: { ...page.pageConfig, ...updatedConfig } }
+                  : page
+              )
+              return { ...layout, pages }
+            }
+            return layout
+          })
+          return { layouts }
+        })
+      },
+
+      // Mise à jour de pageListConfig
+      updatePageListConfig: (layoutUid, pageUid, updatedConfig) => {
+        set((state) => {
+          const layouts = state.layouts.map((layout) => {
+            if (layout.uid === layoutUid) {
+              const pages = layout.pages.map((page) =>
+                page.uid === pageUid
+                  ? { ...page, pageListConfig: { ...page.pageListConfig, ...updatedConfig } }
+                  : page
+              )
+              return { ...layout, pages }
+            }
+            return layout
+          })
+          return { layouts }
+        })
+      },
+
+      // Mise à jour de pageItemConfig
+      updatePageItemConfig: (layoutUid, pageUid, updatedConfig) => {
+        set((state) => {
+          const layouts = state.layouts.map((layout) => {
+            if (layout.uid === layoutUid) {
+              const pages = layout.pages.map((page) =>
+                page.uid === pageUid
+                  ? { ...page, pageItemConfig: { ...page.pageItemConfig, ...updatedConfig } }
+                  : page
+              )
+              return { ...layout, pages }
+            }
+            return layout
+          })
+          return { layouts }
+        })
+      },
+
+      // Mise à jour des éléments d'une page
+      updatePageLayout: (layoutUid, pageUid, updatedItems) => {
+        set((state) => {
+          const layouts = state.layouts.map((layout) => {
+            if (layout.uid === layoutUid) {
+              const pages = layout.pages.map((page) =>
+                page.uid === pageUid ? { ...page, items: updatedItems } : page
+              )
+              return { ...layout, pages }
+            }
+            return layout
+          })
+          return { layouts }
+        })
       },
 
       // Mise à jour d'un bouton
-      updateButton: (layoutUid, pageUid, buttonId, updatedProperties) => {
-        const { layouts } = get()
-        const updatedLayouts = layouts.map((layout) => {
-          if (layout.uid === layoutUid) {
-            const updatedPages = layout.pages.map((page) => {
-              if (page.uid === pageUid) {
-                const updatedItems = page.items.map((item) =>
-                  item.grid.i === buttonId ? { ...item, ...updatedProperties } : item
-                )
-                return { ...page, items: updatedItems }
-              }
-              return page
-            })
-            return { ...layout, pages: updatedPages }
-          }
-          return layout
+      updateButton: (layoutUid, pageUid, buttonUid, updatedProperties) => {
+        set((state) => {
+          const layouts = state.layouts.map((layout) => {
+            if (layout.uid === layoutUid) {
+              const pages = layout.pages.map((page) =>
+                page.uid === pageUid
+                  ? {
+                      ...page,
+                      items: page.items.map((item) =>
+                        item.grid.i === buttonUid ? { ...item, ...updatedProperties } : item
+                      )
+                    }
+                  : page
+              )
+              return { ...layout, pages }
+            }
+            return layout
+          })
+          return { layouts }
         })
-
-        set({ layouts: updatedLayouts })
       },
 
       // Récupération du layout sélectionné
@@ -118,13 +248,11 @@ export const useLayoutStore = create<LayoutStore>()(
 
       // Récupération de la page sélectionnée
       getSelectedPage: () => {
-        const { getSelectedLayout, selectedPageUid } = get()
-        const selectedLayout = getSelectedLayout()
+        const { layouts, selectedLayoutUid, selectedPageUid } = get()
+        const selectedLayout = layouts.find((layout) => layout.uid === selectedLayoutUid)
         return selectedLayout?.pages.find((page) => page.uid === selectedPageUid) || null
       }
     }),
-    {
-      name: 'layout-store' // Clé pour le localStorage
-    }
+    { name: 'layout-store' } // Persistance dans localStorage
   )
 )

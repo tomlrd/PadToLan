@@ -5,7 +5,7 @@ export const getDefaultLayout = (): Layout => ({
   uid: uuidv4(),
   name: 'Default Layout',
   width: 375,
-  height: 812,
+  height: 800,
   bindedKbList: null,
   nosleep: false,
   nonav: false,
