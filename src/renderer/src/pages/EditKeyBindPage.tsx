@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import useKeyBindStore from '../store/useKeyBindStore'
 import { KeyBind, Modifier, KeyBindList } from '../types/keybinds'
 import useLayoutStore from '../store/useLayoutStore'
+import { CirclePlus, CircleX } from 'lucide-react'
 
 const EditKeyBindPage: React.FC = () => {
-  const { keyBindLists, addDefaultKeyBindList, updateKeyBindList } = useKeyBindStore()
+  const { keyBindLists, addDefaultKeyBindList, updateKeyBindList, addDefaultKeyBind } =
+    useKeyBindStore()
   const { selectedLayout } = useLayoutStore()
   const [currentKeyBindList, setCurrentKeyBindList] = useState<KeyBindList | null>(null)
 
-  // Initialisation : sélectionne le KeyBind lié au Layout
   useEffect(() => {
     if (keyBindLists.length === 0) {
       addDefaultKeyBindList()
@@ -18,7 +19,7 @@ const EditKeyBindPage: React.FC = () => {
       )
       setCurrentKeyBindList(initialKeyBindList || null)
     } else {
-      setCurrentKeyBindList(keyBindLists[0]) // Par défaut, sélectionne le premier KeyBind
+      setCurrentKeyBindList(keyBindLists[0])
     }
   }, [keyBindLists, selectedLayout, addDefaultKeyBindList])
 
@@ -35,6 +36,12 @@ const EditKeyBindPage: React.FC = () => {
     updateKeyBindList(updatedKeyBindList)
   }
 
+  const handleAddKeyBind = () => {
+    if (currentKeyBindList) {
+      addDefaultKeyBind(currentKeyBindList.uid)
+    }
+  }
+
   const handleKeyBindListChange = (uid: string) => {
     const selected = keyBindLists.find((keyBindList) => keyBindList.uid === uid) || null
     setCurrentKeyBindList(selected)
@@ -42,9 +49,14 @@ const EditKeyBindPage: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Modifier les Keybinds</h1>
+      <h1 className="text-2xl font-bold mb-4">Edit Keybinds</h1>
+      <button
+        onClick={handleAddKeyBind}
+        className="mb-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+      >
+        Add Key
+      </button>
 
-      {/* Sélection du KeyBindList */}
       <select
         value={currentKeyBindList?.uid || ''}
         onChange={(e) => handleKeyBindListChange(e.target.value)}
@@ -62,66 +74,78 @@ const EditKeyBindPage: React.FC = () => {
           {currentKeyBindList.keybinds.map((keybind) => (
             <div
               key={keybind.uid}
-              className="flex items-center bg-gray-100 p-4 rounded border space-x-4"
+              className="flex items-center bg-gray-100 p-4 rounded border space-x-2"
             >
-              {/* Nom */}
               <input
                 type="text"
                 value={keybind.name}
                 onChange={(e) => handleSaveKeyBind(keybind.uid, { name: e.target.value })}
-                className="p-2 border rounded flex-1"
-                placeholder="Nom"
+                className="p-2 border rounded w-1/3"
+                placeholder="Name"
               />
 
-              {/* Touche */}
               <input
                 type="text"
                 value={keybind.keybind || ''}
                 onChange={(e) => handleSaveKeyBind(keybind.uid, { keybind: e.target.value })}
-                className="p-2 border rounded flex-1"
-                placeholder="Touche"
+                className="p-2 border rounded w-1/2"
+                placeholder="Keybind"
               />
 
-              {/* Modificateurs */}
-              {keybind.modifiers.map((modifier, index) => (
-                <select
-                  key={index}
-                  value={modifier}
-                  onChange={(e) => {
-                    const updatedModifiers = [...keybind.modifiers]
-                    updatedModifiers[index] = e.target.value as Modifier
+              <div className="flex flex-wrap items-center space-x-2">
+                {keybind.modifiers.map((modifier, index) => (
+                  <div key={index} className="flex items-center  border  rounded-md bg-gray-50">
+                    <select
+                      value={modifier}
+                      onChange={(e) => {
+                        const updatedModifiers = [...keybind.modifiers]
+                        updatedModifiers[index] = e.target.value as Modifier
 
-                    handleSaveKeyBind(keybind.uid, {
-                      modifiers: updatedModifiers as [Modifier, Modifier] | [Modifier] | []
-                    })
-                  }}
-                  className="p-2 border rounded"
-                >
-                  {Object.values(Modifier).map((mod) => (
-                    <option key={mod} value={mod}>
-                      {mod}
-                    </option>
-                  ))}
-                </select>
-              ))}
+                        handleSaveKeyBind(keybind.uid, {
+                          modifiers: updatedModifiers as [Modifier, Modifier] | [Modifier] | []
+                        })
+                      }}
+                      className="p-2 border rounded"
+                    >
+                      {Object.values(Modifier).map((mod) => (
+                        <option key={mod} value={mod}>
+                          {mod}
+                        </option>
+                      ))}
+                    </select>
 
-              {/* Ajouter un modificateur */}
-              {keybind.modifiers.length < 2 && (
-                <button
-                  onClick={() =>
-                    handleSaveKeyBind(keybind.uid, {
-                      modifiers: [...keybind.modifiers, Modifier.None] as
-                        | [Modifier, Modifier]
-                        | [Modifier]
-                    })
-                  }
-                  className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-                >
-                  Ajouter
-                </button>
-              )}
+                    <CircleX
+                      size={30}
+                      className="text-red-500 cursor-pointer px-2"
+                      onClick={() => {
+                        const updatedModifiers = keybind.modifiers.filter((_, i) => i !== index)
+                        handleSaveKeyBind(keybind.uid, {
+                          modifiers: updatedModifiers as [Modifier, Modifier] | [Modifier] | []
+                        })
+                      }}
+                    />
+                  </div>
+                ))}
 
-              {/* Double Tap */}
+                {keybind.modifiers.length < 2 && (
+                  <div className="flex items-center space-x-2 border p-2 rounded-md bg-gray-50">
+                    <button
+                      onClick={() =>
+                        handleSaveKeyBind(keybind.uid, {
+                          modifiers: [...keybind.modifiers, Modifier.LeftCtrl] as
+                            | [Modifier, Modifier]
+                            | [Modifier]
+                        })
+                      }
+                      className="flex items-center space-x-2"
+                    >
+                      <CirclePlus size={13} className="cursor-pointer text-green-500" />
+                      <span>Add Modifier</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -131,7 +155,6 @@ const EditKeyBindPage: React.FC = () => {
                 <span>Double Tap</span>
               </label>
 
-              {/* Hold */}
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -141,34 +164,46 @@ const EditKeyBindPage: React.FC = () => {
                 <span>Hold</span>
               </label>
 
-              {/* Repeat */}
-              <input
-                type="number"
-                value={keybind.repeat === 'infinite' ? 0 : keybind.repeat}
-                onChange={(e) =>
-                  handleSaveKeyBind(keybind.uid, {
-                    repeat: Number(e.target.value) === 0 ? 'infinite' : Number(e.target.value)
-                  })
-                }
-                className="p-2 border rounded w-16"
-                placeholder="Repeat"
-              />
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={keybind.repeat}
+                  onChange={(e) => handleSaveKeyBind(keybind.uid, { repeat: e.target.checked })}
+                />
+                <span>Repeat</span>
+              </label>
 
-              {/* Delay Repeat */}
-              <input
-                type="number"
-                value={keybind.delayRepeat}
-                onChange={(e) =>
-                  handleSaveKeyBind(keybind.uid, { delayRepeat: Number(e.target.value) })
-                }
-                className="p-2 border rounded w-16"
-                placeholder="Delay"
-              />
+              {keybind.repeat && (
+                <>
+                  <input
+                    type="number"
+                    value={keybind.repeatNumber === 'infinite' ? 0 : keybind.repeatNumber}
+                    onChange={(e) =>
+                      handleSaveKeyBind(keybind.uid, {
+                        repeatNumber:
+                          Number(e.target.value) === 0 ? 'infinite' : Number(e.target.value)
+                      })
+                    }
+                    className="p-2 border rounded w-16"
+                    placeholder="Repeat"
+                  />
+
+                  <input
+                    type="number"
+                    value={keybind.delayRepeat}
+                    onChange={(e) =>
+                      handleSaveKeyBind(keybind.uid, { delayRepeat: Number(e.target.value) })
+                    }
+                    className="p-2 border rounded w-16"
+                    placeholder="Delay"
+                  />
+                </>
+              )}
             </div>
           ))}
         </div>
       ) : (
-        <p>Aucune liste de Keybinds disponible.</p>
+        <p>No Keybinds available.</p>
       )}
     </div>
   )

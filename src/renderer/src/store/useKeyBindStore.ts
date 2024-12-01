@@ -1,13 +1,14 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
-import { KeyBindList } from '../types/keybinds'
+import { KeyBindList, KeyBind } from '../types/keybinds'
 import { defaultKeyBindList } from '../default/defaultKeybinds'
 
 interface KeyBindStore {
   keyBindLists: KeyBindList[]
   addDefaultKeyBindList: () => void
   addKeyBindList: (keyBindList: Omit<KeyBindList, 'uid'>) => void
+  addDefaultKeyBind: (keyBindListUid: string) => void // Nouvelle méthode
   updateKeyBindList: (updatedKeyBindList: KeyBindList) => void
   deleteKeyBindList: (uid: string) => void
 }
@@ -31,6 +32,37 @@ const useKeyBindStore = create(
         set((state) => ({
           keyBindLists: [...state.keyBindLists, newKeyBindList]
         }))
+      },
+
+      // Ajouter une touche par défaut à une liste existante
+      addDefaultKeyBind: (keyBindListUid) => {
+        const state = get()
+        const targetKeyBindList = state.keyBindLists.find((list) => list.uid === keyBindListUid)
+
+        if (targetKeyBindList) {
+          const newKeyBind: KeyBind = {
+            uid: uuidv4(),
+            name: `Default Action ${targetKeyBindList.keybinds.length + 1}`,
+            keybind: 'A',
+            modifiers: [],
+            doubletap: false,
+            hold: false,
+            repeat: true,
+            repeatNumber: 1,
+            delayRepeat: 0
+          }
+
+          const updatedKeyBindList: KeyBindList = {
+            ...targetKeyBindList,
+            keybinds: [...targetKeyBindList.keybinds, newKeyBind]
+          }
+
+          set((state) => ({
+            keyBindLists: state.keyBindLists.map((list) =>
+              list.uid === keyBindListUid ? updatedKeyBindList : list
+            )
+          }))
+        }
       },
 
       // Mettre à jour une liste existante

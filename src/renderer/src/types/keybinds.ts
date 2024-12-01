@@ -1,5 +1,4 @@
 export enum Modifier {
-  None = 'None',
   LeftCtrl = 'LeftControl',
   RightCtrl = 'RightControl',
   LeftShift = 'LeftShift',
@@ -15,7 +14,8 @@ export interface KeyBind {
   modifiers: [Modifier, Modifier] | [Modifier] | []
   doubletap: boolean
   hold: boolean
-  repeat: number | 'infinite'
+  repeat: boolean
+  repeatNumber: number | 'infinite'
   delayRepeat: number
 }
 

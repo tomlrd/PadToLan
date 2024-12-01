@@ -1,28 +1,42 @@
 import { KeyBindList, Modifier } from '../types/keybinds'
+import { v4 as uuidv4 } from 'uuid'
 
 export const defaultKeyBindList: KeyBindList = {
-  uid: 'default-keybind',
+  uid: uuidv4(),
   name: 'Default KeyBind',
   keybinds: [
     {
-      uid: 'default-action-1',
+      uid: uuidv4(),
       name: 'Default Action 1',
       keybind: 'A',
-      modifiers: [Modifier.None],
+      modifiers: [],
       doubletap: false,
       hold: false,
-      repeat: 1,
+      repeat: true,
+      repeatNumber: 1,
       delayRepeat: 0
     },
     {
-      uid: 'default-action-2',
+      uid: uuidv4(),
       name: 'Default Action 2',
       keybind: 'B',
-      modifiers: [Modifier.None],
+      modifiers: [],
       doubletap: false,
       hold: true,
-      repeat: 'infinite',
+      repeat: true,
+      repeatNumber: 'infinite',
       delayRepeat: 500
+    },
+    {
+      uid: uuidv4(),
+      name: 'Default Action 2',
+      keybind: 'B',
+      modifiers: [Modifier.LeftAlt],
+      doubletap: false,
+      hold: false,
+      repeat: false,
+      repeatNumber: 0,
+      delayRepeat: 0
     }
   ]
 }
