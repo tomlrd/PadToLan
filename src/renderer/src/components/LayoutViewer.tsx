@@ -1,22 +1,53 @@
 import React from 'react'
-import GridLayout from 'react-grid-layout'
+import GridLayout, { Layout as ReactGridLayout } from 'react-grid-layout'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import 'react-tabs/style/react-tabs.css'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
-import { Layout } from '../types/layouts'
+import { useLayoutStore } from '../store/useLayoutStore'
+import { Layout, Page, GridItem } from '../types/layouts'
 
 interface LayoutViewerProps {
   layout: Layout
 }
 
 const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
-  const page = layout.pages[0] // Par défaut, afficher la première page
-  const items = page?.items || []
+  const updateButton = useLayoutStore((state) => state.updateButton)
+  const updatePageLayout = useLayoutStore((state) => state.updatePageLayout)
+  const selectedPageUid = useLayoutStore((state) => state.selectedPageUid)
+  const selectPage = useLayoutStore((state) => state.selectPage)
+
+  const currentPage = layout.pages.find((page) => page.uid === selectedPageUid) || layout.pages[0]
+
+  const handleLayoutChange = (newLayout: ReactGridLayout[]) => {
+    const updatedItems = currentPage.items.map((item) => {
+      const layoutItem = newLayout.find((l) => l.i === item.grid.i)
+      return layoutItem
+        ? {
+            ...item,
+            grid: {
+              ...item.grid,
+              x: layoutItem.x,
+              y: layoutItem.y,
+              w: layoutItem.w,
+              h: layoutItem.h
+            }
+          }
+        : item
+    })
+
+    updatePageLayout(layout.uid, currentPage.uid, updatedItems)
+  }
+
+  const handleButtonUpdate = (gridItem: GridItem, updatedProperties: Partial<GridItem>) => {
+    updateButton(layout.uid, currentPage.uid, gridItem.grid.i, updatedProperties)
+  }
 
   return (
     <div
       className="relative"
       style={{
-        backgroundColor: page.pageConfig.bgcolor,
+        backgroundColor: currentPage.pageConfig.bgcolor,
         width: `${layout.width}px`,
         height: `${layout.height}px`,
         margin: 'auto',
@@ -25,6 +56,17 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
         borderRadius: '8px'
       }}
     >
+      <Tabs
+        selectedIndex={layout.pages.findIndex((page) => page.uid === selectedPageUid) || 0}
+        onSelect={(index) => selectPage(layout.pages[index]?.uid || '')}
+      >
+        <TabList>
+          {layout.pages.map((page) => (
+            <Tab key={page.uid}>{page.name}</Tab>
+          ))}
+        </TabList>
+      </Tabs>
+
       <GridLayout
         className="layout"
         cols={12}
@@ -32,11 +74,9 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
         width={layout.width}
         isDraggable
         isResizable
-        onLayoutChange={(newLayout) => {
-          console.log(newLayout) // Gérer les changements de layout ici
-        }}
+        onLayoutChange={handleLayoutChange}
       >
-        {items.map((item) => (
+        {currentPage.items.map((item) => (
           <div
             key={item.grid.i}
             data-grid={item.grid}
@@ -47,10 +87,22 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
               alignItems: 'center',
               justifyContent: 'center',
               border: '1px solid #ccc',
-              borderRadius: '4px'
+              borderRadius: '4px',
+              position: 'relative'
             }}
           >
             {item.name}
+
+            <button
+              onClick={() =>
+                handleButtonUpdate(item, {
+                  name: prompt('Edit name', item.name) || item.name
+                })
+              }
+              className="absolute top-1 right-1 text-xs bg-gray-200 p-1 rounded"
+            >
+              ✏️
+            </button>
           </div>
         ))}
       </GridLayout>
