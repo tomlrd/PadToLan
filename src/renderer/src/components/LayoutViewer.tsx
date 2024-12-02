@@ -4,21 +4,24 @@ import { Tab, Tabs, TabList } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
-import { useLayoutStore } from '../store/useLayoutStore'
+import { usePageStore } from '../store/usePageStore'
+import { useItemStore } from '../store/useItemStore'
 import { Layout } from '../types/layouts'
 import { ChevronDown } from 'lucide-react'
+import { GridItem } from '../types/layouts'
 
 interface LayoutViewerProps {
   layout: Layout
 }
 
 const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
-  const updateButton = useLayoutStore((state) => state.updateButton)
-  const updatePageLayout = useLayoutStore((state) => state.updatePageLayout)
-  const selectedPageUid = useLayoutStore((state) => state.selectedPageUid)
-  const selectedButtonUid = useLayoutStore((state) => state.selectedButtonUid)
-  const selectButton = useLayoutStore((state) => state.selectButton)
-  const selectPage = useLayoutStore((state) => state.selectPage)
+  const updateItem = useItemStore((state) => state.updateItem)
+  const selectItem = useItemStore((state) => state.selectItem)
+  const selectedItemUid = useItemStore((state) => state.selectedItemUid)
+
+  const selectPage = usePageStore((state) => state.selectPage)
+  const selectedPageUid = usePageStore((state) => state.selectedPageUid)
+  const updatePageItems = usePageStore((state) => state.updatePageItems)
 
   const currentPage = layout.pages.find((page) => page.uid === selectedPageUid) || layout.pages[0]
 
@@ -41,14 +44,11 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
         : item
     })
 
-    updatePageLayout(layout.uid, currentPage.uid, updatedItems)
+    updatePageItems(currentPage.uid, updatedItems)
   }
 
-  const handleButtonUpdate = (
-    gridItemUid: string,
-    updatedProperties: Partial<(typeof currentPage.items)[0]>
-  ) => {
-    updateButton(layout.uid, currentPage.uid, gridItemUid, updatedProperties)
+  const handleItemUpdate = (itemUid: string, updatedProperties: Partial<GridItem>) => {
+    updateItem(itemUid, updatedProperties)
   }
 
   return (
@@ -66,7 +66,7 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
     >
       {/* Tabs for Pages */}
       <Tabs
-        selectedIndex={layout.pages.findIndex((page) => page.uid === selectedPageUid) || 0}
+        selectedIndex={layout.pages.findIndex((page) => page.uid === selectedPageUid)}
         onSelect={(index) => selectPage(layout.pages[index]?.uid || '')}
       >
         <TabList>
@@ -91,7 +91,7 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
             key={item.grid.i}
             data-grid={item.grid}
             className={`relative ${
-              selectedButtonUid === item.grid.i ? 'border-2 border-red-500' : 'border-gray-300'
+              selectedItemUid === item.grid.i ? 'border-2 border-red-500' : 'border-gray-300'
             }`}
             style={{
               backgroundColor: item.bgcolor,
@@ -103,12 +103,12 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
               borderRadius: '4px',
               position: 'relative'
             }}
-            onClick={() => selectButton(item.grid.i)} // Select button on click
+            onClick={() => selectItem(item.grid.i)} // Select the item on click
           >
             {item.name}
 
-            {/* Chevron Icon for Selected Button */}
-            {selectedButtonUid === item.grid.i && (
+            {/* Chevron Icon for Selected Item */}
+            {selectedItemUid === item.grid.i && (
               <ChevronDown size={16} className="absolute bottom-1 right-1 text-blue-500" />
             )}
           </div>

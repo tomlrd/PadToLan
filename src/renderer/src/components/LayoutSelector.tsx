@@ -1,89 +1,22 @@
 import React from 'react'
 import { useLayoutStore } from '../store/useLayoutStore'
-import { Trash, Plus } from 'lucide-react'
-import { BGSize, Justify, BGPos } from '../types/layouts'
+import PageManager from './PageManager'
+import ItemManager from './ItemManager'
+import { Plus, Trash } from 'lucide-react'
 
 const LayoutSelector: React.FC = () => {
-  const {
-    layouts,
-    selectedLayoutUid,
-    selectedPageUid,
-    selectLayout,
-    addDefaultLayout,
-    deleteLayout,
-    getSelectedLayout,
-    addPage,
-    deletePage,
-    updateLayout,
-    updatePageConfig,
-    updatePageListConfig,
-    updatePageItemConfig
-  } = useLayoutStore()
+  const { layouts, selectedLayoutUid, selectLayout, addDefaultLayout, deleteLayout } =
+    useLayoutStore()
 
-  const selectedLayout = getSelectedLayout()
-  const selectedPage = selectedLayout?.pages.find((page) => page.uid === selectedPageUid) || null
-
-  const handleDeleteLayout = () => {
-    if (selectedLayoutUid) {
-      deleteLayout(selectedLayoutUid)
-    }
-  }
+  const selectedLayout = layouts.find((layout) => layout.uid === selectedLayoutUid)
 
   const handleAddLayout = () => {
     addDefaultLayout()
   }
 
-  const handleAddPage = () => {
+  const handleDeleteLayout = () => {
     if (selectedLayoutUid) {
-      addPage(selectedLayoutUid)
-    }
-  }
-
-  const handleDeletePage = () => {
-    if (selectedLayoutUid && selectedPageUid) {
-      deletePage(selectedLayoutUid, selectedPageUid)
-    }
-  }
-
-  const handleUpdateLayout = (field: 'width' | 'height', value: string) => {
-    if (selectedLayout) {
-      updateLayout({
-        ...selectedLayout,
-        [field]: parseInt(value, 10) || 0
-      })
-    }
-  }
-
-  const handleUpdatePageConfig = (
-    field: keyof NonNullable<typeof selectedPage>['pageConfig'],
-    value: string | BGPos
-  ) => {
-    if (selectedPage && selectedLayoutUid) {
-      updatePageConfig(selectedLayoutUid, selectedPage.uid, {
-        [field]: value
-      })
-    }
-  }
-
-  const handleUpdatePageListConfig = (
-    field: keyof NonNullable<typeof selectedPage>['pageListConfig'],
-    value: string | Justify | BGPos
-  ) => {
-    if (selectedPage && selectedLayoutUid) {
-      updatePageListConfig(selectedLayoutUid, selectedPage.uid, {
-        [field]: value
-      })
-    }
-  }
-
-  const handleUpdatePageItemConfig = (
-    field: keyof NonNullable<typeof selectedPage>['pageItemConfig'],
-    value: string | BGPos
-  ) => {
-    if (selectedPage && selectedLayoutUid) {
-      updatePageItemConfig(selectedLayoutUid, selectedPage.uid, {
-        [field]: value
-      })
+      deleteLayout(selectedLayoutUid)
     }
   }
 
@@ -120,79 +53,11 @@ const LayoutSelector: React.FC = () => {
         </button>
       </div>
 
-      {/* Layout Dimensions */}
-      {selectedLayout && (
-        <div className="flex space-x-4">
-          <div>
-            <label className="block text-sm font-medium">Largeur</label>
-            <input
-              type="number"
-              value={selectedLayout.width}
-              onChange={(e) => handleUpdateLayout('width', e.target.value)}
-              className="p-2 border rounded w-full"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Hauteur</label>
-            <input
-              type="number"
-              value={selectedLayout.height}
-              onChange={(e) => handleUpdateLayout('height', e.target.value)}
-              className="p-2 border rounded w-full"
-            />
-          </div>
-        </div>
-      )}
+      {/* Page Manager */}
+      {selectedLayout && <PageManager layout={selectedLayout} />}
 
-      {/* Page Management */}
-      {selectedLayout && (
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={handleAddPage}
-            className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            <Plus size={16} />
-          </button>
-
-          <button
-            onClick={handleDeletePage}
-            className="p-2 bg-red-500 text-white rounded hover:bg-red-600"
-            disabled={!selectedPageUid}
-          >
-            <Trash size={16} />
-          </button>
-        </div>
-      )}
-
-      {/* Page Config Editor */}
-      {selectedPage && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold">Configuration de la Page</h3>
-          <div>
-            <label className="block text-sm font-medium">Couleur de fond</label>
-            <input
-              type="color"
-              value={selectedPage.pageConfig.bgcolor}
-              onChange={(e) => handleUpdatePageConfig('bgcolor', e.target.value)}
-              className="p-2 border rounded w-full"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Taille de l'image</label>
-            <select
-              value={selectedPage.pageConfig.bgsize}
-              onChange={(e) => handleUpdatePageConfig('bgsize', e.target.value as BGSize)}
-              className="p-2 border rounded w-full"
-            >
-              {Object.values(BGSize).map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      )}
+      {/* Item Manager */}
+      {selectedLayout && <ItemManager layout={selectedLayout} />}
     </div>
   )
 }
