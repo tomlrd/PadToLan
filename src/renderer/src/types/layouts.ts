@@ -61,8 +61,7 @@ export interface Page {
     bgsize: string
     bgpos: BGPos
     bgrepeat: 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
-    margin: string
-    padding: string
+    padding: number
     justifyitems: Justify
   }
   pageItemConfig: {

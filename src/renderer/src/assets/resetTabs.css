@@ -1,0 +1,13 @@
+.react-tabs__tab-list {
+  border-bottom: none;
+  margin: none;
+  padding: 0;
+  display: contents;
+}
+
+.react-tabs__tab--selected {
+  background: none;
+  border-color: none;
+  color: none;
+  border-radius: none;
+}
