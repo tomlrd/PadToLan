@@ -5,9 +5,8 @@ import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 import { usePageStore } from '../store/usePageStore'
 import { useItemStore } from '../store/useItemStore'
-import { Layout, Page, Justify } from '../types/layouts'
+import { Layout } from '../types/layouts'
 import { ChevronDown } from 'lucide-react'
-import { GridItem } from '../types/layouts'
 
 interface LayoutViewerProps {
   layout: Layout
@@ -21,8 +20,6 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
   const selectPage = usePageStore((state) => state.selectPage)
   const selectedPageUid = usePageStore((state) => state.selectedPageUid)
   const updatePageItems = usePageStore((state) => state.updatePageItems)
-  const updatePageListConfig = usePageStore((state) => state.updatePageListConfig)
-  const updatePageItemConfig = usePageStore((state) => state.updatePageItemConfig)
 
   const currentPage = layout.pages.find((page) => page.uid === selectedPageUid) || layout.pages[0]
 
@@ -49,39 +46,31 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
   }
 
   const handleTabClick = (pageUid: string) => {
-    const page = layout.pages.find((p) => p.uid === pageUid)
-    if (page) {
-      updatePageListConfig(pageUid, {
-        bgcolor: page.pageItemConfig.onclickbgcolor,
-        bgimg: page.pageItemConfig.bgimg,
-        bgsize: page.pageItemConfig.bgsize,
-        bgpos: page.pageItemConfig.bgpos,
-        bgrepeat: page.pageItemConfig.bgrepeat,
-        padding: Number(page.pageItemConfig.padding),
-        justifyitems: page.pageListConfig.justifyitems as Justify
-      })
-      updatePageItemConfig(pageUid, {
-        bgcolor: page.pageItemConfig.onclickbgcolor,
-        color: page.pageItemConfig.onclickcolor,
-        border: page.pageItemConfig.onclickborder,
-        borderRadius: page.pageItemConfig.borderRadius,
-        bgimg: page.pageItemConfig.bgimg,
-        bgsize: page.pageItemConfig.bgsize,
-        bgpos: page.pageItemConfig.bgpos,
-        bgrepeat: page.pageItemConfig.bgrepeat,
-        padding: page.pageItemConfig.padding,
-        fontFamily: page.pageItemConfig.fontFamily,
-        fontWeight: page.pageItemConfig.fontWeight,
-        fontSize: page.pageItemConfig.fontSize,
-        margin: page.pageItemConfig.margin,
-        height: page.pageItemConfig.height,
-        width: page.pageItemConfig.width,
-        onclickbgcolor: page.pageItemConfig.onclickbgcolor,
-        onclickcolor: page.pageItemConfig.onclickcolor,
-        onclickborder: page.pageItemConfig.onclickborder
-      })
-    }
     selectPage(pageUid)
+  }
+
+  const computeTabStyles = (pageUid: string, pageConfig: any, isSelected: boolean) => {
+    return {
+      backgroundColor: isSelected ? pageConfig.onclickbgcolor : pageConfig.bgcolor,
+      backgroundImage: `url(file:///${pageConfig.bgimg.replace(/\\/g, '/')})`,
+      backgroundSize: pageConfig.bgsize,
+      backgroundPosition: `${pageConfig.bgpos.x} ${pageConfig.bgpos.y}`,
+      backgroundRepeat: pageConfig.bgrepeat,
+      padding: `${pageConfig.padding}px`,
+      width: `${pageConfig.width}px`,
+      height: `${pageConfig.height}px`,
+      color: isSelected ? pageConfig.onclickcolor : pageConfig.color,
+      margin: `${pageConfig.margin}px`,
+      fontFamily: pageConfig.fontFamily,
+      fontWeight: pageConfig.fontWeight,
+      fontSize: `${pageConfig.fontSize}px`,
+      border: `${pageConfig.border}px solid ${isSelected ? pageConfig.onclickborder : pageConfig.borderColor}`,
+      borderRadius: `${pageConfig.borderRadius}px`,
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: pageConfig.justifyitems
+    }
   }
 
   return (
@@ -124,102 +113,92 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
           }}
         ></div>
       </div>
-      <div
-        style={{
-          backgroundImage: `url(file:///${currentPage.pageConfig.bgimg.replace(/\\/g, '/')})`,
-          backgroundColor: currentPage.pageConfig.bgcolor,
-          backgroundSize: currentPage.pageConfig.bgsize,
-          backgroundPosition: `${currentPage.pageConfig.bgpos.x} ${currentPage.pageConfig.bgpos.y}`,
-          backgroundRepeat: currentPage.pageConfig.bgrepeat,
-          backgroundBlendMode: 'overlay',
-          height: 'calc(100% - 30px)',
-          borderBottomRightRadius: '8px',
-          borderBottomLeftRadius: '8px'
-        }}
-      >
-        {/* Tabs for Pages */}
-        <Tabs
+      {currentPage && (
+        <div
           style={{
-            display: 'flex',
-            backgroundColor: currentPage.pageListConfig.bgcolor,
-            backgroundImage: `url(file:///${currentPage.pageListConfig.bgimg.replace(/\\/g, '/')})`,
-            backgroundSize: currentPage.pageListConfig.bgsize,
-            backgroundPosition: `${currentPage.pageListConfig.bgpos.x} ${currentPage.pageListConfig.bgpos.y}`,
-            backgroundRepeat: currentPage.pageListConfig.bgrepeat,
-            padding: `${currentPage.pageListConfig.padding}px`,
-            justifyContent: currentPage.pageListConfig.justifyitems
+            backgroundImage: `url(file:///${currentPage.pageConfig.bgimg.replace(/\\/g, '/')})`,
+            backgroundColor: currentPage.pageConfig.bgcolor,
+            backgroundSize: currentPage.pageConfig.bgsize,
+            backgroundPosition: `${currentPage.pageConfig.bgpos.x} ${currentPage.pageConfig.bgpos.y}`,
+            backgroundRepeat: currentPage.pageConfig.bgrepeat,
+            backgroundBlendMode: 'overlay',
+            height: 'calc(100% - 30px)',
+            borderBottomRightRadius: '8px',
+            borderBottomLeftRadius: '8px'
           }}
-          selectedIndex={layout.pages.findIndex((page) => page.uid === selectedPageUid)}
-          onSelect={(index) => handleTabClick(layout.pages[index]?.uid || '')}
         >
-          <TabList>
-            {layout.pages.map((page) => (
-              <Tab
-                key={page.uid}
+          {/* Tabs for Pages */}
+          <Tabs
+            selectedIndex={layout.pages.findIndex((page) => page.uid === selectedPageUid)}
+            onSelect={(index) => handleTabClick(layout.pages[index]?.uid || '')}
+            style={{
+              display: 'flex',
+              backgroundColor: currentPage.pageListConfig.bgcolor,
+              backgroundImage: `url(file:///${currentPage.pageListConfig.bgimg.replace(/\\/g, '/')})`,
+              backgroundSize: currentPage.pageListConfig.bgsize,
+              backgroundPosition: `${currentPage.pageListConfig.bgpos.x} ${currentPage.pageListConfig.bgpos.y}`,
+              backgroundRepeat: currentPage.pageListConfig.bgrepeat,
+              padding: `${currentPage.pageListConfig.padding}px`,
+              justifyContent: currentPage.pageListConfig.justifyitems
+            }}
+          >
+            <TabList>
+              {layout.pages.map((page) => (
+                <Tab
+                  key={page.uid}
+                  style={computeTabStyles(
+                    page.uid,
+                    page.pageItemConfig,
+                    selectedPageUid === page.uid
+                  )}
+                  onClick={() => selectPage(page.uid)} // Met à jour l'UID de la page sélectionnée
+                >
+                  {page.name}
+                </Tab>
+              ))}
+            </TabList>
+          </Tabs>
+
+          {/* Grid Layout */}
+          <GridLayout
+            className="layout"
+            cols={12}
+            rowHeight={30}
+            width={layout.width}
+            isDraggable
+            isResizable
+            onLayoutChange={handleLayoutChange}
+          >
+            {currentPage.items.map((item) => (
+              <div
+                key={item.grid.i}
+                data-grid={item.grid}
+                className={`relative ${
+                  selectedItemUid === item.grid.i ? 'border-2 border-red-500' : 'border-gray-300'
+                }`}
                 style={{
+                  backgroundColor: item.bgcolor,
+                  color: item.color,
                   display: 'flex',
-                  backgroundColor: page.pageItemConfig.bgcolor,
-                  backgroundImage: `url(file:///${page.pageItemConfig.bgimg.replace(/\\/g, '/')})`,
-                  backgroundSize: page.pageItemConfig.bgsize,
-                  backgroundPosition: `${page.pageItemConfig.bgpos.x} ${page.pageItemConfig.bgpos.y}`,
-                  backgroundRepeat: page.pageItemConfig.bgrepeat,
-                  padding: page.pageItemConfig.padding,
-                  width: page.pageItemConfig.width,
-                  height: page.pageItemConfig.height,
-                  color: page.pageItemConfig.color,
-                  margin: `${currentPage.pageItemConfig.margin}px`,
-                  fontFamily: page.pageItemConfig.fontFamily,
-                  fontWeight: `${currentPage.pageItemConfig.fontWeight}px`,
-                  fontSize: `${currentPage.pageItemConfig.fontSize}px`,
-                  border: `${currentPage.pageItemConfig.border}px solid`,
-                  borderRadius: `${currentPage.pageItemConfig.borderRadius}px`
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  position: 'relative'
                 }}
+                onClick={() => selectItem(item.grid.i)} // Select the item on click
               >
-                {page.name}
-              </Tab>
+                {item.name}
+
+                {/* Chevron Icon for Selected Item */}
+                {selectedItemUid === item.grid.i && (
+                  <ChevronDown size={16} className="absolute bottom-1 right-1 text-blue-500" />
+                )}
+              </div>
             ))}
-          </TabList>
-        </Tabs>
-
-        {/* Grid Layout */}
-        <GridLayout
-          className="layout"
-          cols={12}
-          rowHeight={30}
-          width={layout.width}
-          isDraggable
-          isResizable
-          onLayoutChange={handleLayoutChange}
-        >
-          {currentPage.items.map((item) => (
-            <div
-              key={item.grid.i}
-              data-grid={item.grid}
-              className={`relative ${
-                selectedItemUid === item.grid.i ? 'border-2 border-red-500' : 'border-gray-300'
-              }`}
-              style={{
-                backgroundColor: item.bgcolor,
-                color: item.color,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                position: 'relative'
-              }}
-              onClick={() => selectItem(item.grid.i)} // Select the item on click
-            >
-              {item.name}
-
-              {/* Chevron Icon for Selected Item */}
-              {selectedItemUid === item.grid.i && (
-                <ChevronDown size={16} className="absolute bottom-1 right-1 text-blue-500" />
-              )}
-            </div>
-          ))}
-        </GridLayout>
-      </div>
+          </GridLayout>
+        </div>
+      )}
     </div>
   )
 }

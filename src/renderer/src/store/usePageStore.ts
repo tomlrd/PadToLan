@@ -43,9 +43,18 @@ export const usePageStore = create<PageStore>()((set, get) => ({
 
     if (!selectedLayout) return
 
-    const newPage = getDefaultPage()
-    newPage.uid = uuidv4()
-    newPage.name = `Nouvelle Page ${selectedLayout.pages.length + 1}`
+    // Récupérer la dernière page
+    const lastPage = selectedLayout.pages[selectedLayout.pages.length - 1]
+
+    if (!lastPage) return
+
+    // Cloner la dernière page et lui donner un nouvel UID
+    const newPage = {
+      ...lastPage,
+      uid: uuidv4(),
+      name: `New Page`,
+      items: lastPage.items.filter((item) => item.type !== 'button')
+    }
 
     const updatedLayout = {
       ...selectedLayout,

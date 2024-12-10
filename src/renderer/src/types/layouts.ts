@@ -72,11 +72,13 @@ export interface Page {
     bgpos: BGPos
     bgrepeat: 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
     border: string
+    borderColor: string
     borderRadius: string
     margin: string
     padding: string
     height: string
     width: string
+    justifyitems: 'center' | 'left' | 'right'
     fontFamily: string
     fontWeight: string
     fontSize: string
