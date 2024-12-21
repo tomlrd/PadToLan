@@ -5,8 +5,20 @@ import PageManager from './PageManager'
 import ItemManager from './ItemManager'
 import { Plus, Trash, Edit3, ChevronDown, ChevronUp } from 'lucide-react'
 import { Layout } from '../types/layouts'
+import { useKeyBindStore } from '../store/useKeyBindStore'
 
 const LayoutSelector: React.FC = () => {
+  const {
+    keyBindLists,
+    addDefaultKeyBindList,
+    updateKeyBindList,
+    addDefaultKeyBind,
+    addBlankKeyBindList,
+    deleteKeyBindList,
+    selectedKeyBindListUid,
+    selectKeyBindList,
+    deleteKeyBind
+  } = useKeyBindStore()
   const { layouts, selectedLayoutUid, selectLayout, addDefaultLayout, deleteLayout, updateLayout } =
     useLayoutStore()
   const { selectPage } = usePageStore()
@@ -166,9 +178,9 @@ const LayoutSelector: React.FC = () => {
                     className="p-2 border rounded w-full"
                   >
                     <option value="">Aucun</option>
-                    {JSON.parse(localStorage.getItem('keybinds') || '[]').map((keybind: string) => (
-                      <option key={keybind} value={keybind}>
-                        {keybind}
+                    {keyBindLists.map((keybindList) => (
+                      <option key={keybindList.uid} value={keybindList.uid}>
+                        {keybindList.name}
                       </option>
                     ))}
                   </select>

@@ -40,3 +40,9 @@ export const defaultKeyBindList: KeyBindList = {
     }
   ]
 }
+
+export const blankKeyBindList: KeyBindList = {
+  uid: uuidv4(),
+  name: 'New KeyBinds',
+  keybinds: []
+}

@@ -1,19 +1,22 @@
+// useKeyBindStore.ts
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
 import { KeyBind, KeyBindList } from '../types/keybinds'
-import { defaultKeyBindList } from '../default/defaultKeybinds'
+import { defaultKeyBindList, blankKeyBindList } from '../default/defaultKeybinds'
 
 interface KeyBindStore {
   keyBindLists: KeyBindList[]
   selectedKeyBindListUid: string | null
 
-  // Sélecteurs
+  // Selectors
   selectKeyBindList: (uid: string) => void
 
   // Modifications
   addDefaultKeyBindList: () => void
+  addBlankKeyBindList: () => void
   addDefaultKeyBind: (keyBindListUid: string) => void
+  deleteKeyBind: (keyBindListUid: string, keyBindUid: string) => void
   updateKeyBindList: (updatedKeyBindList: KeyBindList) => void
   deleteKeyBindList: (uid: string) => void
 }
@@ -24,10 +27,15 @@ export const useKeyBindStore = create<KeyBindStore>()(
       keyBindLists: [],
       selectedKeyBindListUid: null,
 
-      // Sélectionner une liste de keybinds
-      selectKeyBindList: (uid) => set({ selectedKeyBindListUid: uid }),
+      // Select a keybind list
+      selectKeyBindList: (uid) => {
+        const existingList = get().keyBindLists.find((list) => list.uid === uid)
+        if (existingList) {
+          set({ selectedKeyBindListUid: uid })
+        }
+      },
 
-      // Ajouter une liste de keybinds par défaut
+      // Add a default keybind list
       addDefaultKeyBindList: () => {
         const newKeyBindList = { ...defaultKeyBindList, uid: uuidv4() }
         set((state) => ({
@@ -36,11 +44,28 @@ export const useKeyBindStore = create<KeyBindStore>()(
         }))
       },
 
-      // Ajouter un keybind par défaut dans une liste existante
+      // Add a blank keybind list
+      addBlankKeyBindList: () => {
+        const newBlankKeyBindList: KeyBindList = {
+          ...blankKeyBindList,
+          uid: uuidv4()
+        }
+
+        set((state) => ({
+          keyBindLists: [...state.keyBindLists, newBlankKeyBindList],
+          selectedKeyBindListUid: newBlankKeyBindList.uid
+        }))
+      },
+
+      // Add a default keybind to an existing list
       addDefaultKeyBind: (keyBindListUid) => {
         const { keyBindLists } = get()
         const list = keyBindLists.find((list) => list.uid === keyBindListUid)
-        if (!list) return
+
+        if (!list) {
+          console.error(`KeyBindList with UID ${keyBindListUid} not found.`)
+          return
+        }
 
         const newKeyBind: KeyBind = {
           uid: uuidv4(),
@@ -59,14 +84,36 @@ export const useKeyBindStore = create<KeyBindStore>()(
           keybinds: [...list.keybinds, newKeyBind]
         }
 
-        set({
-          keyBindLists: keyBindLists.map((list) =>
+        set((state) => ({
+          keyBindLists: state.keyBindLists.map((list) =>
             list.uid === keyBindListUid ? updatedKeyBindList : list
           )
-        })
+        }))
       },
 
-      // Mettre à jour une liste de keybinds
+      // Delete a specific keybind from a keybind list
+      deleteKeyBind: (keyBindListUid, keyBindUid) => {
+        const { keyBindLists } = get()
+        const list = keyBindLists.find((list) => list.uid === keyBindListUid)
+
+        if (!list) {
+          console.error(`KeyBindList with UID ${keyBindListUid} not found.`)
+          return
+        }
+
+        const updatedKeyBindList = {
+          ...list,
+          keybinds: list.keybinds.filter((keybind) => keybind.uid !== keyBindUid)
+        }
+
+        set((state) => ({
+          keyBindLists: state.keyBindLists.map((list) =>
+            list.uid === keyBindListUid ? updatedKeyBindList : list
+          )
+        }))
+      },
+
+      // Update a keybind list
       updateKeyBindList: (updatedKeyBindList) => {
         set((state) => ({
           keyBindLists: state.keyBindLists.map((list) =>
@@ -75,7 +122,7 @@ export const useKeyBindStore = create<KeyBindStore>()(
         }))
       },
 
-      // Supprimer une liste de keybinds
+      // Delete a keybind list
       deleteKeyBindList: (uid) => {
         set((state) => ({
           keyBindLists: state.keyBindLists.filter((list) => list.uid !== uid),
@@ -85,7 +132,7 @@ export const useKeyBindStore = create<KeyBindStore>()(
       }
     }),
     {
-      name: 'keybind-store' // Clé pour le localStorage
+      name: 'keybind-store' // LocalStorage key
     }
   )
 )

@@ -4,12 +4,16 @@ import { usePageStore } from '../store/usePageStore'
 import { GridItem, BGSize } from '../types/layouts'
 import { Trash, Plus, ChevronDown, ChevronUp, Image } from 'lucide-react'
 import { ChromePicker } from 'react-color'
+import { useKeyBindStore } from '../store/useKeyBindStore'
 
 interface ItemManagerProps {
   layout: { uid: string; pages: { uid: string; items: GridItem[] }[] }
 }
 
 const ItemManager: React.FC<ItemManagerProps> = ({ layout }) => {
+  const { keyBindLists, selectedKeyBindListUid } = useKeyBindStore()
+  const currentKeyBindList = keyBindLists.find((list) => list.uid === selectedKeyBindListUid)
+
   const { addItem, deleteItem, updateItem, selectedItemUid, getSelectedItem } = useItemStore()
   const { selectedPageUid } = usePageStore()
   const [isItemConfigCollapsed, setIsItemConfigCollapsed] = useState(false)
@@ -173,12 +177,18 @@ const ItemManager: React.FC<ItemManagerProps> = ({ layout }) => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-50">Action</label>
-                  <input
-                    type="text"
-                    value={selectedItem.action}
+                  <select
+                    value={selectedItem.action || ''}
                     onChange={(e) => handleUpdateItem('action', e.target.value)}
                     className="p-2 border rounded w-full"
-                  />
+                  >
+                    <option value="">Aucune action</option>
+                    {currentKeyBindList?.keybinds.map((keybind) => (
+                      <option key={keybind.uid} value={keybind.uid}>
+                        {keybind.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="flex items-center space-x-4">

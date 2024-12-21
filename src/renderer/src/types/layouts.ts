@@ -98,4 +98,5 @@ export interface Layout {
   pages: Page[]
   nosleep: boolean
   nonav: boolean
+  multi: boolean
 }

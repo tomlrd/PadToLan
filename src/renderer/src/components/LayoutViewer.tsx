@@ -225,7 +225,7 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
                     justifyContent: 'inherit'
                   }}
                   // https://github.com/react-grid-layout/react-grid-layout/issues/293
-                  onMouseDown={(e) => {
+                  onMouseDown={() => {
                     handleItemClick(item.grid.i)
                   }}
                 >
