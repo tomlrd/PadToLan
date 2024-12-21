@@ -172,22 +172,32 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div
+      className="space-y-4"
+      style={{
+        backgroundColor: '#153d56',
+        borderRadius: '5px',
+        padding: '3px'
+      }}
+    >
       {/* Configurations pageConfig */}
       {currentPage && (
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h3 className="text-lg font-bold flex-1 p-2">Pages config</h3>
-            {/* Page Selector */}
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-bold flex-1 p-2 text-slate-50">Pages config</h3>
             <button
               onClick={() => setIsPageConfigCollapsed(!isPageConfigCollapsed)}
-              className="p-1"
+              className="p-1 hover:bg-gray-100 rounded"
             >
-              {isPageConfigCollapsed ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
+              {isPageConfigCollapsed ? (
+                <ChevronDown size={20} className="text-gray-950" />
+              ) : (
+                <ChevronUp size={20} className="text-gray-950" />
+              )}
             </button>
           </div>
           {!isPageConfigCollapsed && (
-            <div style={{ backgroundColor: '#b0d1e7', padding: '5px', borderRadius: '5px' }}>
+            <div>
               <div className="flex items-center space-x-4">
                 {isEditingPageName ? (
                   <input
@@ -238,6 +248,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
               <div className="flex items-center space-x-4">
                 {/* Background Color */}
                 <div ref={bgColorPickerRef} className="relative">
+                  <label className="block text-sm font-medium text-slate-50">BGColor</label>
                   <div
                     className="border border-black cursor-pointer"
                     style={{
@@ -280,33 +291,40 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                     </button>
                   </div>
                 </div>
-                <select
-                  value={currentPage.pageConfig.bgsize}
-                  onChange={(e) => handleUpdatePageConfig('bgsize', e.target.value as BGSize)}
-                  className="p-2 border rounded w-full"
-                >
-                  <option value="cover">Cover</option>
-                  <option value="contain">Contain</option>
-                  <option value="auto">Auto</option>
-                </select>
-                <select
-                  value={currentPage.pageConfig.bgrepeat}
-                  onChange={(e) => handleUpdatePageConfig('bgrepeat', e.target.value)}
-                  className="p-2 border rounded w-full"
-                >
-                  <option value="no-repeat">No Repeat</option>
-                  <option value="repeat">Repeat</option>
-                  <option value="repeat-x">Repeat-X</option>
-                  <option value="repeat-y">Repeat-Y</option>
-                </select>
+                <div>
+                  <label className="block text-sm font-medium text-slate-50">BGSize</label>
+                  <select
+                    value={currentPage.pageConfig.bgsize}
+                    onChange={(e) => handleUpdatePageConfig('bgsize', e.target.value as BGSize)}
+                    className="p-2 border rounded w-full"
+                  >
+                    <option value="cover">Cover</option>
+                    <option value="contain">Contain</option>
+                    <option value="auto">Auto</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-50">BGRepeat</label>
+                  <select
+                    value={currentPage.pageConfig.bgrepeat}
+                    onChange={(e) => handleUpdatePageConfig('bgrepeat', e.target.value)}
+                    className="p-2 border rounded w-full"
+                  >
+                    <option value="no-repeat">No Repeat</option>
+                    <option value="repeat">Repeat</option>
+                    <option value="repeat-x">Repeat-X</option>
+                    <option value="repeat-y">Repeat-Y</option>
+                  </select>
+                </div>
               </div>
 
               {/* Configurations pageListConfig */}
               <div>
-                <h3 className="text-lg font-bold flex-1 p-2">Navigation config</h3>
+                <h3 className="text-lg font-bold flex-1 p-2 text-slate-50">Navigation config</h3>
                 <div className="flex items-center space-x-4">
                   {/* Background Color */}
                   <div ref={listBgColorPickerRef} className="relative">
+                    <label className="block text-sm font-medium text-slate-50">BGColor</label>
                     <div
                       className="border border-black cursor-pointer"
                       style={{
@@ -346,34 +364,40 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                     >
                       <Trash size={16} />
                     </button>
-                    <select
-                      value={currentPage.pageListConfig.bgsize}
-                      onChange={(e) =>
-                        handleUpdatePageListConfig('bgsize', e.target.value as BGSize)
-                      }
-                      className="p-2 border rounded w-full"
-                    >
-                      <option value="cover">Cover</option>
-                      <option value="contain">Contain</option>
-                      <option value="auto">Auto</option>
-                    </select>
-                    <select
-                      value={currentPage.pageListConfig.bgrepeat}
-                      onChange={(e) => handleUpdatePageListConfig('bgrepeat', e.target.value)}
-                      className="p-2 border rounded w-full"
-                    >
-                      <option value="no-repeat">No Repeat</option>
-                      <option value="repeat">Repeat</option>
-                      <option value="repeat-x">Repeat-X</option>
-                      <option value="repeat-y">Repeat-Y</option>
-                    </select>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-50">BGSize</label>
+                      <select
+                        value={currentPage.pageListConfig.bgsize}
+                        onChange={(e) =>
+                          handleUpdatePageListConfig('bgsize', e.target.value as BGSize)
+                        }
+                        className="p-2 border rounded w-full"
+                      >
+                        <option value="cover">Cover</option>
+                        <option value="contain">Contain</option>
+                        <option value="auto">Auto</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-50">BGRepeat</label>
+                      <select
+                        value={currentPage.pageListConfig.bgrepeat}
+                        onChange={(e) => handleUpdatePageListConfig('bgrepeat', e.target.value)}
+                        className="p-2 border rounded w-full"
+                      >
+                        <option value="no-repeat">No Repeat</option>
+                        <option value="repeat">Repeat</option>
+                        <option value="repeat-x">Repeat-X</option>
+                        <option value="repeat-y">Repeat-Y</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
-                  {/* Justify Items */}
                   <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-50">Justify</label>
                     <select
                       value={currentPage.pageListConfig.justifyitems}
                       onChange={(e) =>
@@ -390,8 +414,8 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                     </select>
                   </div>
 
-                  {/* Padding */}
                   <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-50">Padding</label>
                     <input
                       type="number"
                       value={currentPage.pageListConfig.padding}
@@ -404,10 +428,13 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
 
               {/* Configurations pageItemConfig */}
               <div>
-                <h3 className="text-lg font-bold flex-1 p-2">Navigation tabs config</h3>
+                <h3 className="text-lg font-bold flex-1 p-2 text-slate-50">
+                  Navigation tabs config
+                </h3>
                 <div className="flex items-center space-x-4">
                   {/* Background Color */}
                   <div ref={itemColorPickerRef} className="relative">
+                    <label className="block text-sm font-medium text-slate-50">BGColor</label>
                     <div
                       className="border border-black cursor-pointer"
                       style={{
@@ -445,20 +472,39 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                     >
                       <Trash size={16} />
                     </button>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-50">BGSize</label>
+                      <select
+                        value={currentPage.pageItemConfig.bgsize}
+                        onChange={(e) =>
+                          handleUpdatePageItemConfig('bgsize', e.target.value as BGSize)
+                        }
+                        className="p-2 border rounded w-full"
+                      >
+                        <option value="cover">Cover</option>
+                        <option value="contain">Contain</option>
+                        <option value="auto">Auto</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-50">BGRepeat</label>
+                      <select
+                        value={currentPage.pageItemConfig.bgrepeat}
+                        onChange={(e) => handleUpdatePageItemConfig('bgrepeat', e.target.value)}
+                        className="p-2 border rounded w-full"
+                      >
+                        <option value="no-repeat">No Repeat</option>
+                        <option value="repeat">Repeat</option>
+                        <option value="repeat-x">Repeat-X</option>
+                        <option value="repeat-y">Repeat-Y</option>
+                      </select>
+                    </div>
                   </div>
-
-                  {/* Border */}
-                  <div>
-                    <input
-                      type="Number"
-                      value={currentPage.pageItemConfig.border}
-                      onChange={(e) => handleUpdatePageItemConfig('border', e.target.value)}
-                      className="p-2 border rounded w-full"
-                      title="Border size (px)"
-                    />
-                  </div>
+                </div>
+                <div className="flex items-center space-x-4">
                   {/* Border color */}
                   <div ref={borderColorPickerRef} className="relative">
+                    <label className="block text-sm font-medium text-slate-50">BorderColor</label>
                     <div
                       title="Border color"
                       className="border border-black cursor-pointer"
@@ -483,31 +529,41 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                       </div>
                     )}
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-50">BorderSize</label>
+                    <input
+                      type="Number"
+                      value={currentPage.pageItemConfig.border}
+                      onChange={(e) => handleUpdatePageItemConfig('border', e.target.value)}
+                      className="p-2 border rounded w-full"
+                    />
+                  </div>
+
                   {/* Border Radius */}
                   <div>
+                    <label className="block text-sm font-medium text-slate-50">BorderRadius</label>
                     <input
                       type="Number"
                       value={currentPage.pageItemConfig.borderRadius}
                       onChange={(e) => handleUpdatePageItemConfig('borderRadius', e.target.value)}
                       className="p-2 border rounded w-full"
-                      title="Border radius (px)"
                     />
                   </div>
                 </div>
-
                 {/* Font Properties */}
                 <div className="space-y-4">
                   <div className="flex items-center space-x-4">
                     <div>
+                      <label className="block text-sm font-medium text-slate-50">FontSize</label>
                       <input
                         type="Number"
                         value={currentPage.pageItemConfig.fontSize}
                         onChange={(e) => handleUpdatePageItemConfig('fontSize', e.target.value)}
-                        className="p-2 border rounded w-full"
-                        title="Font size (px)"
+                        className="p-2 border rounded w-14"
                       />
                     </div>
                     <div>
+                      <label className="block text-sm font-medium text-slate-50">FontFamily</label>
                       <input
                         type="text"
                         value={currentPage.pageItemConfig.fontFamily}
@@ -516,24 +572,27 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                         title="Font family (must be installed on your computer)"
                       />
                     </div>
-                    {/* text align */}
-                    <select
-                      title="Text align"
-                      value={currentPage.pageItemConfig.justifyitems}
-                      onChange={(e) =>
-                        handleUpdatePageItemConfig('justifyitems', e.target.value as Justify)
-                      }
-                      className="p-2 border rounded w-full"
-                    >
-                      <option value="center">Center</option>
-                      <option value="left">Left</option>
-                      <option value="right">Right</option>
-                    </select>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-50">Justify</label>
+                      <select
+                        title="Text align"
+                        value={currentPage.pageItemConfig.justifyitems}
+                        onChange={(e) =>
+                          handleUpdatePageItemConfig('justifyitems', e.target.value as Justify)
+                        }
+                        className="p-2 border rounded w-full"
+                      >
+                        <option value="center">Center</option>
+                        <option value="left">Left</option>
+                        <option value="right">Right</option>
+                      </select>
+                    </div>
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center space-x-4">
                       {/* Font Color*/}
                       <div ref={itemFontColorPickerRef} className="relative">
+                        <label className="block text-sm font-medium text-slate-50">FontColor</label>
                         <div
                           title="Font color"
                           className="border border-black cursor-pointer"
@@ -560,6 +619,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                       </div>
                       {/* width */}
                       <div>
+                        <label className="block text-sm font-medium text-slate-50">Width</label>
                         <input
                           type="Number"
                           value={currentPage.pageItemConfig.width}
@@ -570,6 +630,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                       </div>
                       {/* height */}
                       <div>
+                        <label className="block text-sm font-medium text-slate-50">Height</label>
                         <input
                           type="Number"
                           value={currentPage.pageItemConfig.height}
@@ -580,6 +641,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                       </div>
                       {/* Padding */}
                       <div>
+                        <label className="block text-sm font-medium text-slate-50">Padding</label>
                         <input
                           type="Number"
                           value={currentPage.pageItemConfig.padding}
@@ -591,6 +653,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
 
                       {/* Margin */}
                       <div>
+                        <label className="block text-sm font-medium text-slate-50">Margin</label>
                         <input
                           type="Number"
                           value={currentPage.pageItemConfig.margin}
@@ -605,12 +668,12 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
               </div>
               {/* Configurations pageItemConfig onclick */}
               <div>
-                <h4 className="text-lg font-bold flex-1 p-2">Tabs onClick</h4>
+                <h4 className="text-lg font-bold flex-1 p-2 text-slate-50">Tabs onClick</h4>
                 <div className="flex items-center space-x-4">
                   {/* Background Color on click */}
                   <div ref={itemOnclickColorBG} className="relative">
+                    <label className="block text-sm font-medium text-slate-50">BGColor</label>
                     <div
-                      title="Background color on click"
                       className="border border-black cursor-pointer"
                       style={{
                         backgroundColor: currentPage.pageItemConfig.onclickbgcolor,
@@ -635,8 +698,8 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                   </div>
                   {/* Border Color on click */}
                   <div ref={itemBorderColorSelectedPickerRef} className="relative">
+                    <label className="block text-sm font-medium text-slate-50">BorderColor</label>
                     <div
-                      title="Border color on click"
                       className="border border-black cursor-pointer"
                       style={{
                         backgroundColor: currentPage.pageItemConfig.onclickborder,
@@ -663,8 +726,8 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                   </div>
                   {/* Font Color on click */}
                   <div ref={itemFontColorSelectedPickerRef} className="relative">
+                    <label className="block text-sm font-medium text-slate-50">FontColor</label>
                     <div
-                      title="Font color on click"
                       className="border border-black cursor-pointer"
                       style={{
                         backgroundColor: currentPage.pageItemConfig.onclickcolor,

@@ -8,6 +8,7 @@ interface ItemStore {
   getSelectedItem: () => GridItem | null
   selectItem: (itemUid: string) => void
   addDefaultItem: () => void
+  addItem: (type: GridItem['type']) => void
   deleteItem: (itemUid: string) => void
   updateItem: (itemUid: string, updatedProperties: Partial<GridItem>) => void
 }
@@ -27,6 +28,22 @@ export const useItemStore = create<ItemStore>()((set, get) => ({
   // Sélectionner un item
   selectItem: (itemUid) => {
     set({ selectedItemUid: itemUid })
+  },
+
+  // Ajouter un item par défaut
+  addItem: (type) => {
+    const pageStore = usePageStore.getState()
+    const selectedPage = pageStore.getSelectedPage()
+
+    if (!selectedPage) return
+
+    // Passer le type au `getDefaultItem`
+    const newItem = { ...getDefaultItem(), type }
+
+    const updatedItems = [...selectedPage.items, newItem]
+
+    pageStore.updatePageItems(selectedPage.uid, updatedItems)
+    set({ selectedItemUid: newItem.grid.i }) // Sélectionner directement le nouvel item
   },
 
   // Ajouter un item par défaut

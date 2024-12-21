@@ -30,10 +30,9 @@ const Home: React.FC = () => {
   const currentLayout = getSelectedLayout()
 
   return (
-    <div className="flex h-screen">
+    <div className="flex">
       {/* Sidebar pour la gestion des Layouts */}
-      <div className="w-96 bg-gray-100 border-r p-4">
-        <h2 className="text-lg font-bold mb-4">Gestion des Layouts</h2>
+      <div className="w-96 p-2">
         <LayoutSelector />
       </div>
 
@@ -42,7 +41,7 @@ const Home: React.FC = () => {
         {currentLayout ? (
           <LayoutViewer layout={currentLayout} />
         ) : (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center">
             <p className="text-gray-500">Aucun layout sélectionné</p>
           </div>
         )}

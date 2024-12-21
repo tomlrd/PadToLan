@@ -26,22 +26,23 @@ export interface GridItem {
   color: string
   name: string
   bgcolor: string
+  borderColor: string
   bgimg: string
   bgsize: string
   bgpos: BGPos
   bgrepeat: 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
-  border: string
-  borderRadius: string
+  border: number
+  borderRadius: number
   action: string
   fontFamily: string
   fontWeight: string
   fontSize: string
-  type: 'button' | 'img/text' | 'triangle'
+  type: 'button' | 'img/text'
   onclickbgcolor: string
   onclickcolor: string
-  onclickborder: string
-  textShadow: string
-  boxShadow: string
+  onclickbordercolor: string
+  textShadow: boolean
+  boxShadow: boolean
 }
 
 export interface Page {

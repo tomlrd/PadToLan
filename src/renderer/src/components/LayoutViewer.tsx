@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import GridLayout, { Layout as ReactGridLayout } from 'react-grid-layout'
 import { Tab, Tabs, TabList } from 'react-tabs'
 import 'react-grid-layout/css/styles.css'
-import 'react-resizable/css/styles.css'
 import { usePageStore } from '../store/usePageStore'
 import { useItemStore } from '../store/useItemStore'
 import { Layout } from '../types/layouts'
@@ -13,6 +12,8 @@ interface LayoutViewerProps {
 }
 
 const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
+  const [animatedItem, setAnimatedItem] = useState<string | null>(null) // État local pour l'animation
+
   const updateItem = useItemStore((state) => state.updateItem)
   const selectItem = useItemStore((state) => state.selectItem)
   const selectedItemUid = useItemStore((state) => state.selectedItemUid)
@@ -31,6 +32,7 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
       return layoutItem
         ? {
             ...item,
+            resizeHandles: [],
             grid: {
               ...item.grid,
               x: layoutItem.x,
@@ -73,6 +75,12 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
     }
   }
 
+  const handleItemClick = (itemUid: string) => {
+    selectItem(itemUid)
+    setAnimatedItem(itemUid) // Déclenche l'animation
+    setTimeout(() => setAnimatedItem(null), 1000) // Réinitialise l'animation après 1 seconde
+  }
+
   return (
     <div
       style={{
@@ -101,7 +109,7 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
             width: '80%',
             height: '20px',
             backgroundColor: '#b1b1b1',
-            WebkitBorderRadius: '4px'
+            borderRadius: '4px'
           }}
         ></div>
         <div
@@ -109,7 +117,7 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
             width: '10%',
             height: '20px',
             backgroundColor: '#b1b1b1',
-            WebkitBorderRadius: '4px'
+            borderRadius: '4px'
           }}
         ></div>
       </div>
@@ -151,7 +159,7 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
                     page.pageItemConfig,
                     selectedPageUid === page.uid
                   )}
-                  onClick={() => selectPage(page.uid)} // Met à jour l'UID de la page sélectionnée
+                  onClick={() => selectPage(page.uid)}
                 >
                   {page.name}
                 </Tab>
@@ -163,38 +171,66 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
           <GridLayout
             className="layout"
             cols={12}
-            rowHeight={30}
+            rowHeight={10}
             width={layout.width}
-            isDraggable
-            isResizable
             onLayoutChange={handleLayoutChange}
+            preventCollision={true}
+            isBounded={false}
+            autoSize={true}
+            isDroppable={false}
           >
             {currentPage.items.map((item) => (
-              <div
+              <button
                 key={item.grid.i}
                 data-grid={item.grid}
-                className={`relative ${
-                  selectedItemUid === item.grid.i ? 'border-2 border-red-500' : 'border-gray-300'
-                }`}
                 style={{
-                  backgroundColor: item.bgcolor,
-                  color: item.color,
+                  backgroundColor:
+                    animatedItem === item.grid.i && item.type !== 'img/text'
+                      ? item.onclickbgcolor
+                      : item.bgcolor,
+                  color:
+                    animatedItem === item.grid.i && item.type !== 'img/text'
+                      ? item.onclickcolor
+                      : item.color,
+                  borderColor:
+                    animatedItem === item.grid.i && item.type !== 'img/text'
+                      ? item.onclickbordercolor
+                      : item.borderColor,
+                  backgroundImage: `url(file:///${item.bgimg.replace(/\\/g, '/')})`,
+                  transition: 'backgroundColor 1s ease, color 1s ease, borderColor 1s ease',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  position: 'relative'
+                  borderWidth: `${item.border}px`,
+                  borderRadius: `${item.borderRadius}px`,
+                  borderBlockStyle: 'solid',
+                  cursor: 'pointer',
+                  backgroundPosition: `${item.bgpos.x} ${item.bgpos.y}`,
+                  backgroundRepeat: item.bgrepeat,
+                  backgroundSize: item.bgsize,
+                  fontFamily: item.fontFamily,
+                  fontWeight: item.fontWeight,
+                  fontSize: `${item.fontSize}px`,
+                  backgroundBlendMode: 'overlay',
+                  textShadow: item.textShadow ? '0 1px 2px black' : 'none',
+                  boxShadow: item.boxShadow ? '0 0 10px black' : 'none'
                 }}
-                onClick={() => selectItem(item.grid.i)} // Select the item on click
               >
-                {item.name}
+                <div
+                  // https://github.com/react-grid-layout/react-grid-layout/issues/293
+                  onMouseDown={(e) => {
+                    e.stopPropagation()
+                    handleItemClick(item.grid.i)
+                  }}
+                >
+                  {item.name}
+                </div>
 
                 {/* Chevron Icon for Selected Item */}
                 {selectedItemUid === item.grid.i && (
                   <ChevronDown size={16} className="absolute bottom-1 right-1 text-blue-500" />
                 )}
-              </div>
+              </button>
             ))}
           </GridLayout>
         </div>
