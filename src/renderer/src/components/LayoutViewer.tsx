@@ -217,9 +217,15 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
                 }}
               >
                 <div
+                  style={{
+                    width: 'inherit',
+                    height: 'inherit',
+                    display: 'inherit',
+                    alignItems: 'inherit',
+                    justifyContent: 'inherit'
+                  }}
                   // https://github.com/react-grid-layout/react-grid-layout/issues/293
                   onMouseDown={(e) => {
-                    e.stopPropagation()
                     handleItemClick(item.grid.i)
                   }}
                 >
