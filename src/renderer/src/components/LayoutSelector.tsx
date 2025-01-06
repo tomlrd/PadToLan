@@ -1,37 +1,25 @@
+import { ChevronDown, ChevronUp, Edit3, Plus, Trash } from 'lucide-react'
 import React, { useState } from 'react'
+import { useKeyBindStore } from '../store/useKeyBindStore'
 import { useLayoutStore } from '../store/useLayoutStore'
 import { usePageStore } from '../store/usePageStore'
-import PageManager from './PageManager'
-import ItemManager from './ItemManager'
-import { Plus, Trash, Edit3, ChevronDown, ChevronUp } from 'lucide-react'
 import { Layout } from '../types/layouts'
-import { useKeyBindStore } from '../store/useKeyBindStore'
+import ItemManager from './ItemManager'
+import PageManager from './PageManager'
 
 const LayoutSelector: React.FC = () => {
-  const {
-    keyBindLists,
-    addDefaultKeyBindList,
-    updateKeyBindList,
-    addDefaultKeyBind,
-    addBlankKeyBindList,
-    deleteKeyBindList,
-    selectedKeyBindListUid,
-    selectKeyBindList,
-    deleteKeyBind
-  } = useKeyBindStore()
+  const { keyBindLists, selectKeyBindList } = useKeyBindStore()
   const { layouts, selectedLayoutUid, selectLayout, addDefaultLayout, deleteLayout, updateLayout } =
     useLayoutStore()
   const { selectPage } = usePageStore()
   const [isEditing, setIsEditing] = useState(false)
   const [layoutName, setLayoutName] = useState('')
   const [isILayoutonfigCollapsed, setIsLayoutConfigCollapsed] = useState(false)
-
   const selectedLayout = layouts.find((layout) => layout.uid === selectedLayoutUid)
 
   const handleSelectLayout = (uid: string) => {
     selectLayout(uid)
 
-    // Sélectionner automatiquement la première page du layout
     const selectedLayout = layouts.find((layout) => layout.uid === uid)
     if (selectedLayout?.pages.length) {
       selectPage(selectedLayout.pages[0].uid)
@@ -49,6 +37,13 @@ const LayoutSelector: React.FC = () => {
   }
 
   const handleUpdateLayout = <T extends keyof Layout>(field: T, value: Layout[T]) => {
+    if (typeof value === 'string' && /<script[^>]*>/i.test(value)) {
+      alert("Invalid input: '<script>' is not allowed.")
+      return
+    }
+    if (field === 'bindedKbList' && typeof value === 'string') {
+      selectKeyBindList(value)
+    }
     if (selectedLayout) {
       updateLayout({
         ...selectedLayout,
@@ -82,7 +77,7 @@ const LayoutSelector: React.FC = () => {
         }}
       >
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-bold flex-1 p-2 text-slate-50">Gestion des Layout</h3>
+          <h3 className="text-lg font-bold flex-1 p-2 text-slate-50">Layouts config</h3>
           <button
             onClick={() => setIsLayoutConfigCollapsed(!isILayoutonfigCollapsed)}
             className="p-1 hover:bg-gray-100 rounded"
@@ -112,7 +107,7 @@ const LayoutSelector: React.FC = () => {
                   onChange={(e) => handleSelectLayout(e.target.value)}
                   className="flex-1 p-2 border rounded"
                 >
-                  <option value="">Sélectionnez un Layout</option>
+                  <option value="">Select layout</option>
                   {layouts.map((layout) => (
                     <option key={layout.uid} value={layout.uid}>
                       {layout.name}
@@ -145,7 +140,7 @@ const LayoutSelector: React.FC = () => {
             {selectedLayout && (
               <div className="flex items-center space-x-4">
                 <div>
-                  <label className="block text-sm font-medium">Width</label>
+                  <label className="block text-sm font-medium text-slate-50">Width</label>
                   <input
                     type="number"
                     value={selectedLayout.width || ''}
@@ -154,7 +149,7 @@ const LayoutSelector: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium">Height</label>
+                  <label className="block text-sm font-medium text-slate-50">Height</label>
                   <input
                     type="number"
                     value={selectedLayout.height || ''}
@@ -168,55 +163,72 @@ const LayoutSelector: React.FC = () => {
             )}
 
             {selectedLayout && (
-              <div className="flex items-center space-x-4">
-                {/* Keybinds Selector */}
-                <div className="flex-1">
-                  <label className="block text-sm font-medium">Keybinds</label>
-                  <select
-                    value={selectedLayout.bindedKbList || ''}
-                    onChange={(e) => handleUpdateLayout('bindedKbList', e.target.value || null)}
-                    className="p-2 border rounded w-full"
-                  >
-                    <option value="">Aucun</option>
-                    {keyBindLists.map((keybindList) => (
-                      <option key={keybindList.uid} value={keybindList.uid}>
-                        {keybindList.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <>
+                <div className="flex items-center space-x-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-50">Keybinds</label>
+                    <select
+                      value={selectedLayout.bindedKbList || ''}
+                      onChange={(e) => handleUpdateLayout('bindedKbList', e.target.value || null)}
+                      className="p-2 border rounded w-full"
+                    >
+                      <option value="">None</option>
+                      {keyBindLists.map((keybindList) => (
+                        <option key={keybindList.uid} value={keybindList.uid}>
+                          {keybindList.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                {/* NoSleep */}
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm font-medium">NoSleep</label>
-                  <input
-                    type="checkbox"
-                    checked={selectedLayout.nosleep}
-                    onChange={(e) => handleUpdateLayout('nosleep', e.target.checked)}
-                    className="w-5 h-5"
-                  />
-                </div>
+                  <div className="flex flex-col items-start space-y-1 text-slate-50">
+                    <label className="text-sm font-medium">NoSleep</label>
+                    <input
+                      type="checkbox"
+                      checked={selectedLayout.nosleep}
+                      onChange={(e) => handleUpdateLayout('nosleep', e.target.checked)}
+                      className="w-5 h-5"
+                    />
+                  </div>
 
-                {/* NoNav */}
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm font-medium">NoNav</label>
-                  <input
-                    type="checkbox"
-                    checked={selectedLayout.nonav}
-                    onChange={(e) => handleUpdateLayout('nonav', e.target.checked)}
-                    className="w-5 h-5"
-                  />
+                  <div className="flex flex-col items-start space-y-1 text-slate-50">
+                    <label className="text-sm font-medium">NoNav</label>
+                    <input
+                      type="checkbox"
+                      checked={selectedLayout.nonav}
+                      onChange={(e) => handleUpdateLayout('nonav', e.target.checked)}
+                      className="w-5 h-5"
+                    />
+                  </div>
                 </div>
-              </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-50">cols</label>
+                    <input
+                      type="number"
+                      value={selectedLayout.cols}
+                      onChange={(e) => handleUpdateLayout('cols', Number(e.target.value))}
+                      className="p-2 border rounded w-full"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-50">rowHeight</label>
+                    <input
+                      type="number"
+                      value={selectedLayout.rowHeight}
+                      onChange={(e) => handleUpdateLayout('rowHeight', Number(e.target.value))}
+                      className="p-2 border rounded w-full"
+                    />
+                  </div>
+                </div>
+              </>
             )}
           </>
         )}
       </div>
 
-      {/* Page Manager */}
       {selectedLayout && <PageManager layout={selectedLayout} />}
 
-      {/* Item Manager */}
       {selectedLayout && <ItemManager layout={selectedLayout} />}
     </>
   )

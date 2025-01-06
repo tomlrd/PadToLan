@@ -1,24 +1,24 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
-import { Layout, Page } from '../types/layouts'
+import { Layout } from '../types/layouts'
 import { getDefaultLayout } from '../default/defaultLayouts'
+import { defaultSC40Layout } from '../default/defaultSC4-0Layout'
 
 interface LayoutStore {
   layouts: Layout[]
   selectedLayoutUid: string | null
 
-  // Sélecteurs
   selectLayout: (uid: string) => void
 
-  // Modifications
   addDefaultLayout: () => void
+  addDefaultLayoutSC: () => void
   deleteLayout: (uid: string) => void
   updateLayout: (updatedLayout: Partial<Layout>) => void
   updateLayouts: (updatedLayouts: Layout[]) => void
 
-  // Récupérateurs
   getSelectedLayout: () => Layout | null
+  getAllLayouts: () => Layout[]
 }
 
 export const useLayoutStore = create<LayoutStore>()(
@@ -27,12 +27,10 @@ export const useLayoutStore = create<LayoutStore>()(
       layouts: [],
       selectedLayoutUid: null,
 
-      // Sélection d'un layout
       selectLayout: (uid) => {
         set({ selectedLayoutUid: uid })
       },
 
-      // Création d'un layout par défaut
       addDefaultLayout: () => {
         const defaultLayout = getDefaultLayout()
         const newLayout: Layout = {
@@ -47,7 +45,13 @@ export const useLayoutStore = create<LayoutStore>()(
         }))
       },
 
-      // Suppression d'un layout
+      addDefaultLayoutSC: () => {
+        set((state) => ({
+          layouts: [...state.layouts, defaultSC40Layout as Layout],
+          selectedLayoutUid: defaultSC40Layout.uid
+        }))
+      },
+
       deleteLayout: (uid) => {
         set((state) => ({
           layouts: state.layouts.filter((layout) => layout.uid !== uid),
@@ -55,7 +59,6 @@ export const useLayoutStore = create<LayoutStore>()(
         }))
       },
 
-      // Mise à jour d'un layout
       updateLayout: (updatedLayout) => {
         set((state) => ({
           layouts: state.layouts.map((layout) =>
@@ -64,15 +67,17 @@ export const useLayoutStore = create<LayoutStore>()(
         }))
       },
 
-      // Mise à jour complète des layouts
       updateLayouts: (updatedLayouts) => {
         set({ layouts: updatedLayouts })
       },
 
-      // Récupération du layout sélectionné
       getSelectedLayout: () => {
         const { layouts, selectedLayoutUid } = get()
         return layouts.find((layout) => layout.uid === selectedLayoutUid) || null
+      },
+
+      getAllLayouts: () => {
+        return get().layouts
       }
     }),
     { name: 'layout-store' }

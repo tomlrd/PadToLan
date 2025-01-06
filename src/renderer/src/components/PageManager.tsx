@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { ChevronDown, ChevronUp, Edit3, Image, Plus, Trash } from 'lucide-react'
+import React, { useEffect, useRef, useState } from 'react'
 import { ChromePicker } from 'react-color'
 import { usePageStore } from '../store/usePageStore'
-import { Trash, Plus, Edit3, Image, ChevronDown, ChevronUp } from 'lucide-react'
-import { Page, BGSize, Justify, BGPos } from '../types/layouts'
+import { BGSize, Justify, Page } from '../types/layouts'
 
 interface PageManagerProps {
   layout: { uid: string; pages: Page[] }
@@ -25,7 +25,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
   const [isEditingPageName, setIsEditingPageName] = useState(false)
   const [newPageName, setNewPageName] = useState(currentPage?.name || '')
 
-  // State pour gérer les ChromePickers
   const [isBgColorPickerOpen, setIsBgColorPickerOpen] = useState(false)
   const [isListBgColorPickerOpen, setIsListBgColorPickerOpen] = useState(false)
   const [isItemColorPickerOpen, setIsItemColorPickerOpen] = useState(false)
@@ -34,7 +33,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
   const [isItemOnClickColorBG, setIsBGColorSelectedPickerOpen] = useState(false)
   const [isItemOnClickFontColor, setIsFontColorSelectedPickerOpen] = useState(false)
   const [isItemFontColor, setIsFontColorPickerOpen] = useState(false)
-  // Refs pour gérer les clics en dehors
+
   const borderColorPickerRef = useRef<HTMLDivElement | null>(null)
   const bgColorPickerRef = useRef<HTMLDivElement | null>(null)
   const listBgColorPickerRef = useRef<HTMLDivElement | null>(null)
@@ -44,11 +43,8 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
   const itemBorderColorSelectedPickerRef = useRef<HTMLDivElement | null>(null)
   const itemFontColorSelectedPickerRef = useRef<HTMLDivElement | null>(null)
   const itemFontColorPickerRef = useRef<HTMLDivElement | null>(null)
-  // State pour replier/déplier les sections
+
   const [isPageConfigCollapsed, setIsPageConfigCollapsed] = useState(false)
-  const [isNavigationConfigCollapsed, setIsNavigationConfigCollapsed] = useState(false)
-  const [isTabsConfigCollapsed, setIsTabsConfigCollapsed] = useState(false)
-  const [isTabsOnClickConfigCollapsed, setIsTabsOnClickConfigCollapsed] = useState(false)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -90,12 +86,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
         setIsBGColorSelectedPickerOpen(false)
       }
       if (
-        itemBorderColorSelectedPickerRef.current &&
-        !itemBorderColorSelectedPickerRef.current.contains(event.target as Node)
-      ) {
-        setIsBGColorSelectedPickerOpen(false)
-      }
-      if (
         itemFontColorSelectedPickerRef.current &&
         !itemFontColorSelectedPickerRef.current.contains(event.target as Node)
       ) {
@@ -127,24 +117,40 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
 
   const handleUpdatePageConfig = (field: keyof Page['pageConfig'], value: string) => {
     if (selectedPageUid) {
+      if (/<script[^>]*>/i.test(value)) {
+        alert("Invalid input: '<script>' is not allowed.")
+        return
+      }
       updatePageConfig(selectedPageUid, { [field]: value })
     }
   }
 
   const handleUpdatePageListConfig = (field: keyof Page['pageListConfig'], value: string) => {
     if (selectedPageUid) {
+      if (/<script[^>]*>/i.test(value)) {
+        alert("Invalid input: '<script>' is not allowed.")
+        return
+      }
       updatePageListConfig(selectedPageUid, { [field]: value })
     }
   }
 
   const handleUpdatePageItemConfig = (field: keyof Page['pageItemConfig'], value: string) => {
     if (selectedPageUid) {
+      if (/<script[^>]*>/i.test(value)) {
+        alert("Invalid input: '<script>' is not allowed.")
+        return
+      }
       updatePageItemConfig(selectedPageUid, { [field]: value })
     }
   }
 
   const handlePageNameChange = () => {
     if (currentPage && newPageName.trim()) {
+      if (/<script[^>]*>/i.test(newPageName.trim())) {
+        alert("Invalid input: '<script>' is not allowed.")
+        return
+      }
       updatePageName(currentPage.uid, newPageName.trim())
       setIsEditingPageName(false)
     }
@@ -154,7 +160,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
     field: keyof Page['pageConfig'] | keyof Page['pageListConfig'] | keyof Page['pageItemConfig'],
     configType: 'pageConfig' | 'pageListConfig' | 'pageItemConfig'
   ) => {
-    const result = await window.electron.ipcRenderer.invoke('dialog:imgPage', {
+    const result = await window.electron.ipcRenderer.invoke('dialog:img', {
       filters: [{ name: 'Images', extensions: ['png', 'jpg'] }]
     })
 
@@ -180,7 +186,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
         padding: '3px'
       }}
     >
-      {/* Configurations pageConfig */}
       {currentPage && (
         <div>
           <div className="flex justify-between items-center">
@@ -198,7 +203,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
           </div>
           {!isPageConfigCollapsed && (
             <div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-end space-x-4">
                 {isEditingPageName ? (
                   <input
                     type="text"
@@ -245,8 +250,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                   <Trash size={16} />
                 </button>
               </div>
-              <div className="flex items-center space-x-4">
-                {/* Background Color */}
+              <div className="flex items-end space-x-4">
                 <div ref={bgColorPickerRef} className="relative">
                   <label className="block text-sm font-medium text-slate-50">BGColor</label>
                   <div
@@ -273,7 +277,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                   )}
                 </div>
                 <div className="space-y-4">
-                  {/* Bouton pour sélectionner une image */}
                   <div className="flex items-center space-x-4">
                     <button
                       onClick={() => handleSelectImage('bgimg', 'pageConfig')}
@@ -282,7 +285,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                       <Image size={16} />
                     </button>
 
-                    {/* Bouton pour supprimer l'image */}
                     <button
                       onClick={() => handleUpdatePageConfig('bgimg', '')}
                       className="p-2 bg-red-500 text-white border rounded hover:bg-red-600"
@@ -318,11 +320,9 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                 </div>
               </div>
 
-              {/* Configurations pageListConfig */}
               <div>
                 <h3 className="text-lg font-bold flex-1 p-2 text-slate-50">Navigation config</h3>
-                <div className="flex items-center space-x-4">
-                  {/* Background Color */}
+                <div className="flex items-end space-x-4">
                   <div ref={listBgColorPickerRef} className="relative">
                     <label className="block text-sm font-medium text-slate-50">BGColor</label>
                     <div
@@ -348,8 +348,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center space-x-4">
-                    {/* Bouton pour sélectionner une image */}
+                  <div className="flex items-end space-x-4">
                     <button
                       onClick={() => handleSelectImage('bgimg', 'pageListConfig')}
                       className="p-2 bg-gray-200 border rounded hover:bg-gray-300"
@@ -357,7 +356,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                       <Image size={16} />
                     </button>
 
-                    {/* Bouton pour supprimer l'image */}
                     <button
                       onClick={() => handleUpdatePageListConfig('bgimg', '')}
                       className="p-2 bg-red-500 text-white border rounded hover:bg-red-600"
@@ -395,7 +393,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                 </div>
               </div>
               <div className="space-y-4">
-                <div className="flex items-center space-x-4">
+                <div className="flex items-end space-x-4">
                   <div className="flex-1">
                     <label className="block text-sm font-medium text-slate-50">Justify</label>
                     <select
@@ -426,83 +424,82 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                 </div>
               </div>
 
-              {/* Configurations pageItemConfig */}
               <div>
                 <h3 className="text-lg font-bold flex-1 p-2 text-slate-50">
                   Navigation tabs config
                 </h3>
-                <div className="flex items-center space-x-4">
-                  {/* Background Color */}
-                  <div ref={itemColorPickerRef} className="relative">
-                    <label className="block text-sm font-medium text-slate-50">BGColor</label>
-                    <div
-                      className="border border-black cursor-pointer"
-                      style={{
-                        backgroundColor: currentPage.pageItemConfig.bgcolor,
-                        width: 20,
-                        height: 20
-                      }}
-                      onClick={() => setIsItemColorPickerOpen(!isItemColorPickerOpen)}
-                    ></div>
-                    {isItemColorPickerOpen && (
-                      <div className="absolute z-10 mt-2">
-                        <ChromePicker
-                          color={currentPage.pageItemConfig.bgcolor}
-                          onChangeComplete={(color) =>
-                            handleUpdatePageItemConfig(
-                              'bgcolor',
-                              `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a || 1})`
-                            )
-                          }
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => handleSelectImage('bgimg', 'pageItemConfig')}
-                      className="p-2 bg-gray-200 border rounded hover:bg-gray-300"
-                    >
-                      <Image size={16} />
-                    </button>
-                    <button
-                      onClick={() => handleUpdatePageItemConfig('bgimg', '')}
-                      className="p-2 bg-red-500 text-white border rounded hover:bg-red-600"
-                    >
-                      <Trash size={16} />
-                    </button>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-50">BGSize</label>
-                      <select
-                        value={currentPage.pageItemConfig.bgsize}
-                        onChange={(e) =>
-                          handleUpdatePageItemConfig('bgsize', e.target.value as BGSize)
-                        }
-                        className="p-2 border rounded w-full"
-                      >
-                        <option value="cover">Cover</option>
-                        <option value="contain">Contain</option>
-                        <option value="auto">Auto</option>
-                      </select>
+                <div className="space-y-4">
+                  <div className="flex items-end space-x-4">
+                    <div ref={itemColorPickerRef} className="relative">
+                      <label className="block text-sm font-medium text-slate-50">BGColor</label>
+                      <div
+                        className="border border-black cursor-pointer"
+                        style={{
+                          backgroundColor: currentPage.pageItemConfig.bgcolor,
+                          width: 20,
+                          height: 20
+                        }}
+                        onClick={() => setIsItemColorPickerOpen(!isItemColorPickerOpen)}
+                      ></div>
+                      {isItemColorPickerOpen && (
+                        <div className="absolute z-10 mt-2">
+                          <ChromePicker
+                            color={currentPage.pageItemConfig.bgcolor}
+                            onChangeComplete={(color) =>
+                              handleUpdatePageItemConfig(
+                                'bgcolor',
+                                `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a || 1})`
+                              )
+                            }
+                          />
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-50">BGRepeat</label>
-                      <select
-                        value={currentPage.pageItemConfig.bgrepeat}
-                        onChange={(e) => handleUpdatePageItemConfig('bgrepeat', e.target.value)}
-                        className="p-2 border rounded w-full"
+
+                    <div className="flex items-end space-x-4">
+                      <button
+                        onClick={() => handleSelectImage('bgimg', 'pageItemConfig')}
+                        className="p-2 bg-gray-200 border rounded hover:bg-gray-300"
                       >
-                        <option value="no-repeat">No Repeat</option>
-                        <option value="repeat">Repeat</option>
-                        <option value="repeat-x">Repeat-X</option>
-                        <option value="repeat-y">Repeat-Y</option>
-                      </select>
+                        <Image size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleUpdatePageItemConfig('bgimg', '')}
+                        className="p-2 bg-red-500 text-white border rounded hover:bg-red-600"
+                      >
+                        <Trash size={16} />
+                      </button>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-50">BGSize</label>
+                        <select
+                          value={currentPage.pageItemConfig.bgsize}
+                          onChange={(e) =>
+                            handleUpdatePageItemConfig('bgsize', e.target.value as BGSize)
+                          }
+                          className="p-2 border rounded w-full"
+                        >
+                          <option value="cover">Cover</option>
+                          <option value="contain">Contain</option>
+                          <option value="auto">Auto</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-50">BGRepeat</label>
+                        <select
+                          value={currentPage.pageItemConfig.bgrepeat}
+                          onChange={(e) => handleUpdatePageItemConfig('bgrepeat', e.target.value)}
+                          className="p-2 border rounded w-full"
+                        >
+                          <option value="no-repeat">No Repeat</option>
+                          <option value="repeat">Repeat</option>
+                          <option value="repeat-x">Repeat-X</option>
+                          <option value="repeat-y">Repeat-Y</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4">
-                  {/* Border color */}
+                <div className="flex items-end space-x-4">
                   <div ref={borderColorPickerRef} className="relative">
                     <label className="block text-sm font-medium text-slate-50">BorderColor</label>
                     <div
@@ -539,7 +536,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                     />
                   </div>
 
-                  {/* Border Radius */}
                   <div>
                     <label className="block text-sm font-medium text-slate-50">BorderRadius</label>
                     <input
@@ -550,9 +546,9 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                     />
                   </div>
                 </div>
-                {/* Font Properties */}
+
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-end space-x-4">
                     <div>
                       <label className="block text-sm font-medium text-slate-50">FontSize</label>
                       <input
@@ -589,8 +585,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-4">
-                      {/* Font Color*/}
+                    <div className="flex items-end space-x-4">
                       <div ref={itemFontColorPickerRef} className="relative">
                         <label className="block text-sm font-medium text-slate-50">FontColor</label>
                         <div
@@ -617,7 +612,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                           </div>
                         )}
                       </div>
-                      {/* width */}
                       <div>
                         <label className="block text-sm font-medium text-slate-50">Width</label>
                         <input
@@ -628,7 +622,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                           title="Width (px)"
                         />
                       </div>
-                      {/* height */}
                       <div>
                         <label className="block text-sm font-medium text-slate-50">Height</label>
                         <input
@@ -639,7 +632,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                           title="Height (px)"
                         />
                       </div>
-                      {/* Padding */}
                       <div>
                         <label className="block text-sm font-medium text-slate-50">Padding</label>
                         <input
@@ -651,7 +643,6 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                         />
                       </div>
 
-                      {/* Margin */}
                       <div>
                         <label className="block text-sm font-medium text-slate-50">Margin</label>
                         <input
@@ -666,11 +657,9 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                   </div>
                 </div>
               </div>
-              {/* Configurations pageItemConfig onclick */}
               <div>
                 <h4 className="text-lg font-bold flex-1 p-2 text-slate-50">Tabs onClick</h4>
-                <div className="flex items-center space-x-4">
-                  {/* Background Color on click */}
+                <div className="flex items-end space-x-4">
                   <div ref={itemOnclickColorBG} className="relative">
                     <label className="block text-sm font-medium text-slate-50">BGColor</label>
                     <div
@@ -696,7 +685,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                       </div>
                     )}
                   </div>
-                  {/* Border Color on click */}
+
                   <div ref={itemBorderColorSelectedPickerRef} className="relative">
                     <label className="block text-sm font-medium text-slate-50">BorderColor</label>
                     <div
@@ -724,7 +713,7 @@ const PageManager: React.FC<PageManagerProps> = ({ layout }) => {
                       </div>
                     )}
                   </div>
-                  {/* Font Color on click */}
+
                   <div ref={itemFontColorSelectedPickerRef} className="relative">
                     <label className="block text-sm font-medium text-slate-50">FontColor</label>
                     <div

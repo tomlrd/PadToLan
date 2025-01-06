@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useKeyBindStore } from '../store/useKeyBindStore'
 import { KeyBind, Modifier } from '../types/keybinds'
-import { useLayoutStore } from '../store/useLayoutStore'
 import { CirclePlus, CircleX, Edit3, Trash } from 'lucide-react'
 
 const EditKeyBindPage: React.FC = () => {
   const {
     keyBindLists,
-    addDefaultKeyBindList,
     updateKeyBindList,
     addDefaultKeyBind,
     addBlankKeyBindList,
@@ -17,33 +15,21 @@ const EditKeyBindPage: React.FC = () => {
     deleteKeyBind
   } = useKeyBindStore()
 
-  const { getSelectedLayout } = useLayoutStore()
-  const selectedLayout = getSelectedLayout()
-
   const currentKeyBindList = keyBindLists.find((list) => list.uid === selectedKeyBindListUid)
   const [isEditing, setIsEditing] = useState(false)
   const [editedKeyBindListName, setEditedKeyBindListName] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (keyBindLists.length === 0) {
-      addDefaultKeyBindList()
-    } else if (!selectedKeyBindListUid) {
-      const initialKeyBindList =
-        keyBindLists.find((keyBindList) => keyBindList.uid === selectedLayout?.bindedKbList) ||
-        keyBindLists[0]
-      selectKeyBindList(initialKeyBindList.uid)
-    }
-  }, [
-    keyBindLists,
-    selectedLayout,
-    selectedKeyBindListUid,
-    addDefaultKeyBindList,
-    selectKeyBindList
-  ])
-
   const handleSaveKeyBind = (keyBindUid: string, updatedValue: Partial<KeyBind>) => {
     if (!currentKeyBindList) return
 
+    if (
+      Object.values(updatedValue).some(
+        (value) => typeof value === 'string' && /<script[^>]*>/i.test(value)
+      )
+    ) {
+      alert("Invalid input: '<script>' is not allowed.")
+      return
+    }
     const updatedKeyBindList = {
       ...currentKeyBindList,
       keybinds: currentKeyBindList.keybinds.map((keybind) =>
@@ -62,6 +48,10 @@ const EditKeyBindPage: React.FC = () => {
 
   const handleKeyBindListNameChange = () => {
     if (currentKeyBindList && editedKeyBindListName !== null) {
+      if (/<script[^>]*>/i.test(editedKeyBindListName)) {
+        alert("Invalid input: '<script>' is not allowed.")
+        return
+      }
       const updatedKeyBindList = {
         ...currentKeyBindList,
         name: editedKeyBindListName
@@ -70,12 +60,16 @@ const EditKeyBindPage: React.FC = () => {
       setIsEditing(false)
     }
   }
-
   const handleDeleteKeyBindList = () => {
     if (currentKeyBindList) {
       deleteKeyBindList(currentKeyBindList.uid)
     }
   }
+  useEffect(() => {
+    if (!currentKeyBindList && keyBindLists.length > 0) {
+      selectKeyBindList(keyBindLists[0].uid)
+    }
+  }, [currentKeyBindList, keyBindLists])
 
   return (
     <div className="p-4">
@@ -248,27 +242,30 @@ const EditKeyBindPage: React.FC = () => {
                 {keybind.repeat && (
                   <>
                     <input
-                      type="number"
-                      value={keybind.repeatNumber === 'infinite' ? 0 : keybind.repeatNumber}
+                      type="text"
+                      value={
+                        keybind.repeatNumber === 'infinite' ? 'infinite' : keybind.repeatNumber
+                      }
                       onChange={(e) =>
                         handleSaveKeyBind(keybind.uid, {
                           repeatNumber:
                             Number(e.target.value) === 0 ? 'infinite' : Number(e.target.value)
                         })
                       }
-                      className="p-2 border rounded w-16"
-                      placeholder="Repeat"
+                      className="p-2 border rounded"
+                      style={{ width: '70px' }}
                     />
-
+                    times
                     <input
                       type="number"
                       value={keybind.delayRepeat}
                       onChange={(e) =>
                         handleSaveKeyBind(keybind.uid, { delayRepeat: Number(e.target.value) })
                       }
-                      className="p-2 border rounded w-16"
-                      placeholder="Delay"
+                      className="p-2 border rounded"
+                      style={{ width: '80px' }}
                     />
+                    delay
                   </>
                 )}
               </div>

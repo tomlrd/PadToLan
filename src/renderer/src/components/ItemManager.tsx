@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { useItemStore } from '../store/useItemStore'
-import { usePageStore } from '../store/usePageStore'
-import { GridItem, BGSize } from '../types/layouts'
-import { Trash, Plus, ChevronDown, ChevronUp, Image } from 'lucide-react'
+import { ChevronDown, ChevronUp, Image, Plus, Trash } from 'lucide-react'
+import React, { useEffect, useRef, useState } from 'react'
 import { ChromePicker } from 'react-color'
+import { useItemStore } from '../store/useItemStore'
 import { useKeyBindStore } from '../store/useKeyBindStore'
+import { usePageStore } from '../store/usePageStore'
+import { BGSize, GridItem } from '../types/layouts'
 
 interface ItemManagerProps {
   layout: { uid: string; pages: { uid: string; items: GridItem[] }[] }
@@ -14,7 +14,15 @@ const ItemManager: React.FC<ItemManagerProps> = ({ layout }) => {
   const { keyBindLists, selectedKeyBindListUid } = useKeyBindStore()
   const currentKeyBindList = keyBindLists.find((list) => list.uid === selectedKeyBindListUid)
 
-  const { addItem, deleteItem, updateItem, selectedItemUid, getSelectedItem } = useItemStore()
+  const {
+    copyItemProperties,
+    pasteItemProperties,
+    addItem,
+    deleteItem,
+    updateItem,
+    selectedItemUid,
+    getSelectedItem
+  } = useItemStore()
   const { selectedPageUid } = usePageStore()
   const [isItemConfigCollapsed, setIsItemConfigCollapsed] = useState(false)
   const [newItemType, setNewItemType] = useState<GridItem['type']>('button')
@@ -50,8 +58,20 @@ const ItemManager: React.FC<ItemManagerProps> = ({ layout }) => {
 
   const handleUpdateItem = (field: keyof GridItem, value: string | boolean) => {
     if (selectedItemUid) {
+      if (typeof value === 'string' && /<script[^>]*>/i.test(value)) {
+        alert("Invalid input: '<script>' is not allowed.")
+        return
+      }
       updateItem(selectedItemUid, { [field]: value })
     }
+  }
+
+  const handleCopy = (itemUid: string) => {
+    copyItemProperties(itemUid)
+  }
+
+  const handlePaste = (targetItemUid: string) => {
+    pasteItemProperties(targetItemUid)
   }
 
   useEffect(() => {
@@ -101,7 +121,7 @@ const ItemManager: React.FC<ItemManagerProps> = ({ layout }) => {
   }, [])
 
   const handleSelectImage = async (field: keyof GridItem) => {
-    const result = await window.electron.ipcRenderer.invoke('dialog:imgPage', {
+    const result = await window.electron.ipcRenderer.invoke('dialog:img', {
       filters: [{ name: 'Images', extensions: ['png', 'jpg'] }]
     })
 
@@ -121,7 +141,7 @@ const ItemManager: React.FC<ItemManagerProps> = ({ layout }) => {
       }}
     >
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-bold flex-1 p-2 text-slate-50">Gestion des Items</h3>
+        <h3 className="text-lg font-bold flex-1 p-2 text-slate-50">Items config</h3>
         <button
           onClick={() => setIsItemConfigCollapsed(!isItemConfigCollapsed)}
           className="p-1 hover:bg-gray-100 rounded"
@@ -134,10 +154,8 @@ const ItemManager: React.FC<ItemManagerProps> = ({ layout }) => {
         </button>
       </div>
 
-      {/* Section repliable */}
       {!isItemConfigCollapsed && (
         <>
-          {/* Menu déroulant pour sélectionner le type et bouton d'ajout */}
           <div className="flex items-center space-x-4">
             <select
               value={newItemType}
@@ -160,13 +178,26 @@ const ItemManager: React.FC<ItemManagerProps> = ({ layout }) => {
             >
               <Trash size={16} />
             </button>
+            <button
+              onClick={() => selectedItemUid && handleCopy(selectedItemUid)}
+              disabled={!selectedItemUid}
+              className="p-2 bg-white border rounded hover:bg-gray-300 cursor-pointer"
+            >
+              Copy
+            </button>
+            <button
+              onClick={() => selectedItemUid && handlePaste(selectedItemUid)}
+              disabled={!selectedItemUid}
+              className="p-2 bg-white border rounded hover:bg-gray-300 cursor-pointer"
+            >
+              Paste
+            </button>
           </div>
 
-          {/* Éditeur de propriétés des items */}
           {selectedItem && (
             <>
               <div className="flex items-center space-x-4">
-                <div>
+                <div className="w-1/2">
                   <label className="block text-sm font-medium text-slate-50">Nom</label>
                   <input
                     type="text"
@@ -175,21 +206,23 @@ const ItemManager: React.FC<ItemManagerProps> = ({ layout }) => {
                     className="p-2 border rounded w-full"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-50">Action</label>
-                  <select
-                    value={selectedItem.action || ''}
-                    onChange={(e) => handleUpdateItem('action', e.target.value)}
-                    className="p-2 border rounded w-full"
-                  >
-                    <option value="">Aucune action</option>
-                    {currentKeyBindList?.keybinds.map((keybind) => (
-                      <option key={keybind.uid} value={keybind.uid}>
-                        {keybind.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {selectedItem.type === 'button' && (
+                  <div className="w-1/2">
+                    <label className="block text-sm font-medium text-slate-50">Action</label>
+                    <select
+                      value={selectedItem.action || ''}
+                      onChange={(e) => handleUpdateItem('action', e.target.value)}
+                      className="p-2 border rounded w-full"
+                    >
+                      <option value="">None</option>
+                      {currentKeyBindList?.keybinds.map((keybind) => (
+                        <option key={keybind.uid} value={keybind.uid}>
+                          {keybind.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
               <div className="flex items-center space-x-4">
                 <div ref={itemBGColorPickerRef} className="relative">
@@ -364,90 +397,106 @@ const ItemManager: React.FC<ItemManagerProps> = ({ layout }) => {
                   />
                 </div>
               </div>
-              <h3 className="text-lg font-bold text-slate-50">Items onClick</h3>
               <div className="flex items-center space-x-4">
-                <div ref={itemBGColorPickerOnClickRef} className="relative">
-                  <label className="block text-sm font-medium text-slate-50">BGColor</label>
-                  <div
-                    className="border border-black cursor-pointer"
-                    style={{
-                      backgroundColor: selectedItem.onclickbgcolor,
-                      width: 20,
-                      height: 20
-                    }}
-                    onClick={() =>
-                      setIsItemBGColorPickerOpenOnClick(!isItemBGColorPickerOpenOnClick)
-                    }
-                  ></div>
-                  {isItemBGColorPickerOpenOnClick && (
-                    <div className="absolute z-10 mt-2">
-                      <ChromePicker
-                        color={selectedItem.onclickbgcolor}
-                        onChangeComplete={(color) =>
-                          handleUpdateItem(
-                            'onclickbgcolor',
-                            `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a || 1})`
-                          )
-                        }
-                      />
-                    </div>
-                  )}
-                </div>
-                <div ref={itemBorderColorPickerOnClickRef} className="relative">
-                  <label className="block text-sm font-medium text-slate-50">BorderColor</label>
-                  <div
-                    className="border border-black cursor-pointer"
-                    style={{
-                      backgroundColor: selectedItem.onclickbordercolor,
-                      width: 20,
-                      height: 20
-                    }}
-                    onClick={() =>
-                      setIsItemBorderColorPickerOpenOnClick(!isItemBorderColorPickerOpenOnClick)
-                    }
-                  ></div>
-                  {isItemBorderColorPickerOpenOnClick && (
-                    <div className="absolute z-10 mt-2">
-                      <ChromePicker
-                        color={selectedItem.onclickbordercolor}
-                        onChangeComplete={(color) =>
-                          handleUpdateItem(
-                            'onclickbordercolor',
-                            `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a || 1})`
-                          )
-                        }
-                      />
-                    </div>
-                  )}
-                </div>
-                <div ref={itemFontColorPickerOnClickRef} className="relative">
-                  <label className="block text-sm font-medium text-slate-50">FontColor</label>
-                  <div
-                    className="border border-black cursor-pointer"
-                    style={{
-                      backgroundColor: selectedItem.onclickcolor,
-                      width: 20,
-                      height: 20
-                    }}
-                    onClick={() =>
-                      setIsItemFontColorPickerOpenOnClick(!isItemFontColorPickerOpenOnClick)
-                    }
-                  ></div>
-                  {isItemFontColorPickerOpenOnClick && (
-                    <div className="absolute z-10 mt-2">
-                      <ChromePicker
-                        color={selectedItem.onclickcolor}
-                        onChangeComplete={(color) =>
-                          handleUpdateItem(
-                            'onclickcolor',
-                            `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a || 1})`
-                          )
-                        }
-                      />
-                    </div>
-                  )}
+                <div className="w-16">
+                  <label className="block text-sm font-medium text-slate-50">FontWeight</label>
+                  <input
+                    type="Number"
+                    value={selectedItem.fontWeight}
+                    onChange={(e) => handleUpdateItem('fontWeight', e.target.value)}
+                    className="p-2 border rounded w-full"
+                  />
                 </div>
               </div>
+
+              {selectedItem.type === 'button' && (
+                <>
+                  <h3 className="text-lg font-bold text-slate-50">Items onClick</h3>
+                  <div className="flex items-center space-x-4">
+                    <div ref={itemBGColorPickerOnClickRef} className="relative">
+                      <label className="block text-sm font-medium text-slate-50">BGColor</label>
+                      <div
+                        className="border border-black cursor-pointer"
+                        style={{
+                          backgroundColor: selectedItem.onclickbgcolor,
+                          width: 20,
+                          height: 20
+                        }}
+                        onClick={() =>
+                          setIsItemBGColorPickerOpenOnClick(!isItemBGColorPickerOpenOnClick)
+                        }
+                      ></div>
+                      {isItemBGColorPickerOpenOnClick && (
+                        <div className="absolute z-10 mt-2">
+                          <ChromePicker
+                            color={selectedItem.onclickbgcolor}
+                            onChangeComplete={(color) =>
+                              handleUpdateItem(
+                                'onclickbgcolor',
+                                `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a || 1})`
+                              )
+                            }
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div ref={itemBorderColorPickerOnClickRef} className="relative">
+                      <label className="block text-sm font-medium text-slate-50">BorderColor</label>
+                      <div
+                        className="border border-black cursor-pointer"
+                        style={{
+                          backgroundColor: selectedItem.onclickbordercolor,
+                          width: 20,
+                          height: 20
+                        }}
+                        onClick={() =>
+                          setIsItemBorderColorPickerOpenOnClick(!isItemBorderColorPickerOpenOnClick)
+                        }
+                      ></div>
+                      {isItemBorderColorPickerOpenOnClick && (
+                        <div className="absolute z-10 mt-2">
+                          <ChromePicker
+                            color={selectedItem.onclickbordercolor}
+                            onChangeComplete={(color) =>
+                              handleUpdateItem(
+                                'onclickbordercolor',
+                                `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a || 1})`
+                              )
+                            }
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div ref={itemFontColorPickerOnClickRef} className="relative">
+                      <label className="block text-sm font-medium text-slate-50">FontColor</label>
+                      <div
+                        className="border border-black cursor-pointer"
+                        style={{
+                          backgroundColor: selectedItem.onclickcolor,
+                          width: 20,
+                          height: 20
+                        }}
+                        onClick={() =>
+                          setIsItemFontColorPickerOpenOnClick(!isItemFontColorPickerOpenOnClick)
+                        }
+                      ></div>
+                      {isItemFontColorPickerOpenOnClick && (
+                        <div className="absolute z-10 mt-2">
+                          <ChromePicker
+                            color={selectedItem.onclickcolor}
+                            onChangeComplete={(color) =>
+                              handleUpdateItem(
+                                'onclickcolor',
+                                `rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a || 1})`
+                              )
+                            }
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
             </>
           )}
         </>

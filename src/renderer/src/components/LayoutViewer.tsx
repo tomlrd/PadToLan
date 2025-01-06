@@ -1,22 +1,19 @@
 import React, { useState } from 'react'
 import GridLayout, { Layout as ReactGridLayout } from 'react-grid-layout'
-import { Tab, Tabs, TabList } from 'react-tabs'
 import 'react-grid-layout/css/styles.css'
-import { usePageStore } from '../store/usePageStore'
+import { Tab, TabList, Tabs } from 'react-tabs'
 import { useItemStore } from '../store/useItemStore'
+import { usePageStore } from '../store/usePageStore'
 import { Layout } from '../types/layouts'
-import { ChevronDown } from 'lucide-react'
 
 interface LayoutViewerProps {
   layout: Layout
 }
 
 const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
-  const [animatedItem, setAnimatedItem] = useState<string | null>(null) // État local pour l'animation
+  const [animatedItem, setAnimatedItem] = useState<string | null>(null)
 
-  const updateItem = useItemStore((state) => state.updateItem)
   const selectItem = useItemStore((state) => state.selectItem)
-  const selectedItemUid = useItemStore((state) => state.selectedItemUid)
 
   const selectPage = usePageStore((state) => state.selectPage)
   const selectedPageUid = usePageStore((state) => state.selectedPageUid)
@@ -51,7 +48,7 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
     selectPage(pageUid)
   }
 
-  const computeTabStyles = (pageUid: string, pageConfig: any, isSelected: boolean) => {
+  const computeTabStyles = (_pageUid: string, pageConfig: any, isSelected: boolean) => {
     return {
       backgroundColor: isSelected ? pageConfig.onclickbgcolor : pageConfig.bgcolor,
       backgroundImage: `url(file:///${pageConfig.bgimg.replace(/\\/g, '/')})`,
@@ -75,9 +72,13 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
     }
   }
 
-  const handleItemClick = (itemUid: string) => {
-    selectItem(itemUid)
-    setAnimatedItem(itemUid) // Déclenche l'animation
+  const handleItemClick = (item: any) => {
+    if (item.type === 'img/text') {
+      selectItem(item.grid.i)
+      return
+    }
+    selectItem(item.grid.i)
+    setAnimatedItem(item.grid.i) // Déclenche l'animation
     setTimeout(() => setAnimatedItem(null), 1000) // Réinitialise l'animation après 1 seconde
   }
 
@@ -135,49 +136,49 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
             borderBottomLeftRadius: '8px'
           }}
         >
-          {/* Tabs for Pages */}
-          <Tabs
-            selectedIndex={layout.pages.findIndex((page) => page.uid === selectedPageUid)}
-            onSelect={(index) => handleTabClick(layout.pages[index]?.uid || '')}
-            style={{
-              display: 'flex',
-              backgroundColor: currentPage.pageListConfig.bgcolor,
-              backgroundImage: `url(file:///${currentPage.pageListConfig.bgimg.replace(/\\/g, '/')})`,
-              backgroundSize: currentPage.pageListConfig.bgsize,
-              backgroundPosition: `${currentPage.pageListConfig.bgpos.x} ${currentPage.pageListConfig.bgpos.y}`,
-              backgroundRepeat: currentPage.pageListConfig.bgrepeat,
-              padding: `${currentPage.pageListConfig.padding}px`,
-              justifyContent: currentPage.pageListConfig.justifyitems
-            }}
-          >
-            <TabList>
-              {layout.pages.map((page) => (
-                <Tab
-                  key={page.uid}
-                  style={computeTabStyles(
-                    page.uid,
-                    page.pageItemConfig,
-                    selectedPageUid === page.uid
-                  )}
-                  onClick={() => selectPage(page.uid)}
-                >
-                  {page.name}
-                </Tab>
-              ))}
-            </TabList>
-          </Tabs>
+          {layout.nonav === false && (
+            <Tabs
+              selectedIndex={layout.pages.findIndex((page) => page.uid === selectedPageUid)}
+              onSelect={(index) => handleTabClick(layout.pages[index]?.uid || '')}
+              style={{
+                display: 'flex',
+                backgroundColor: currentPage.pageListConfig.bgcolor,
+                backgroundImage: `url(file:///${currentPage.pageListConfig.bgimg.replace(/\\/g, '/')})`,
+                backgroundSize: currentPage.pageListConfig.bgsize,
+                backgroundPosition: `${currentPage.pageListConfig.bgpos.x} ${currentPage.pageListConfig.bgpos.y}`,
+                backgroundRepeat: currentPage.pageListConfig.bgrepeat,
+                padding: `${currentPage.pageListConfig.padding}px`,
+                justifyContent: currentPage.pageListConfig.justifyitems
+              }}
+            >
+              <TabList>
+                {layout.pages.map((page) => (
+                  <Tab
+                    key={page.uid}
+                    style={computeTabStyles(
+                      page.uid,
+                      page.pageItemConfig,
+                      selectedPageUid === page.uid
+                    )}
+                    onClick={() => selectPage(page.uid)}
+                  >
+                    {page.name}
+                  </Tab>
+                ))}
+              </TabList>
+            </Tabs>
+          )}
 
-          {/* Grid Layout */}
           <GridLayout
             className="layout"
-            cols={12}
-            rowHeight={10}
+            cols={layout.cols}
+            rowHeight={layout.rowHeight}
             width={layout.width}
             onLayoutChange={handleLayoutChange}
             preventCollision={true}
             isBounded={false}
             autoSize={true}
-            isDroppable={false}
+            compactType={null}
           >
             {currentPage.items.map((item) => (
               <button
@@ -226,16 +227,11 @@ const LayoutViewer: React.FC<LayoutViewerProps> = ({ layout }) => {
                   }}
                   // https://github.com/react-grid-layout/react-grid-layout/issues/293
                   onMouseDown={() => {
-                    handleItemClick(item.grid.i)
+                    handleItemClick(item)
                   }}
                 >
                   {item.name}
                 </div>
-
-                {/* Chevron Icon for Selected Item */}
-                {selectedItemUid === item.grid.i && (
-                  <ChevronDown size={16} className="absolute bottom-1 right-1 text-blue-500" />
-                )}
               </button>
             ))}
           </GridLayout>

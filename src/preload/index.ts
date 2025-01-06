@@ -1,6 +1,6 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-
+import process from 'process'
 // Custom APIs for renderer
 const api = {}
 

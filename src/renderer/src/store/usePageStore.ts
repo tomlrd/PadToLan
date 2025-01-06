@@ -2,7 +2,6 @@ import { create } from 'zustand'
 import { useLayoutStore } from './useLayoutStore'
 import { Page, GridItem } from '../types/layouts'
 import { v4 as uuidv4 } from 'uuid'
-import { getDefaultPage } from '../default/defaultLayouts'
 
 interface PageStore {
   selectedPageUid: string | null
@@ -22,7 +21,6 @@ interface PageStore {
 export const usePageStore = create<PageStore>()((set, get) => ({
   selectedPageUid: null,
 
-  // Retrieve the selected page
   getSelectedPage: () => {
     const layoutStore = useLayoutStore.getState()
     const selectedLayout = layoutStore.getSelectedLayout()
@@ -31,29 +29,25 @@ export const usePageStore = create<PageStore>()((set, get) => ({
     return selectedLayout.pages.find((page) => page.uid === get().selectedPageUid) || null
   },
 
-  // Select a page
   selectPage: (pageUid) => {
     set({ selectedPageUid: pageUid })
   },
 
-  // Add a default page
   addDefaultPage: () => {
     const layoutStore = useLayoutStore.getState()
     const selectedLayout = layoutStore.getSelectedLayout()
 
     if (!selectedLayout) return
 
-    // Récupérer la dernière page
     const lastPage = selectedLayout.pages[selectedLayout.pages.length - 1]
 
     if (!lastPage) return
 
-    // Cloner la dernière page et lui donner un nouvel UID
     const newPage = {
       ...lastPage,
       uid: uuidv4(),
       name: `New Page`,
-      items: lastPage.items.filter((item) => item.type !== 'button')
+      items: []
     }
 
     const updatedLayout = {
@@ -65,7 +59,6 @@ export const usePageStore = create<PageStore>()((set, get) => ({
     set({ selectedPageUid: newPage.uid })
   },
 
-  // Delete a page
   deletePage: (pageUid) => {
     const layoutStore = useLayoutStore.getState()
     const selectedLayout = layoutStore.getSelectedLayout()
@@ -81,11 +74,9 @@ export const usePageStore = create<PageStore>()((set, get) => ({
 
     layoutStore.updateLayout(updatedLayout)
 
-    // Select the first remaining page, or null if no pages exist
     set({ selectedPageUid: updatedPages.length > 0 ? updatedPages[0].uid : null })
   },
 
-  // Update pageConfig properties
   updatePageConfig: (pageUid, updatedConfig) => {
     const layoutStore = useLayoutStore.getState()
     const selectedLayout = layoutStore.getSelectedLayout()
@@ -109,7 +100,6 @@ export const usePageStore = create<PageStore>()((set, get) => ({
     layoutStore.updateLayout(updatedLayout)
   },
 
-  // Update pageListConfig properties
   updatePageListConfig: (pageUid, updatedConfig) => {
     const layoutStore = useLayoutStore.getState()
     const selectedLayout = layoutStore.getSelectedLayout()
@@ -133,7 +123,6 @@ export const usePageStore = create<PageStore>()((set, get) => ({
     layoutStore.updateLayout(updatedLayout)
   },
 
-  // Update pageItemConfig properties
   updatePageItemConfig: (pageUid, updatedConfig) => {
     const layoutStore = useLayoutStore.getState()
     const selectedLayout = layoutStore.getSelectedLayout()
@@ -157,7 +146,6 @@ export const usePageStore = create<PageStore>()((set, get) => ({
     layoutStore.updateLayout(updatedLayout)
   },
 
-  // Update items of a page
   updatePageItems: (pageUid, items) => {
     const layoutStore = useLayoutStore.getState()
     const selectedLayout = layoutStore.getSelectedLayout()
@@ -176,7 +164,6 @@ export const usePageStore = create<PageStore>()((set, get) => ({
     layoutStore.updateLayout(updatedLayout)
   },
 
-  // Update the name of a page
   updatePageName: (pageUid, name) => {
     const layoutStore = useLayoutStore.getState()
     const selectedLayout = layoutStore.getSelectedLayout()

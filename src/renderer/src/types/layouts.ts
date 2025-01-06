@@ -63,6 +63,7 @@ export interface Page {
     bgpos: BGPos
     bgrepeat: 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
     padding: number
+    margin: number
     justifyitems: Justify
   }
   pageItemConfig: {
@@ -72,11 +73,11 @@ export interface Page {
     bgsize: string
     bgpos: BGPos
     bgrepeat: 'repeat' | 'no-repeat' | 'repeat-x' | 'repeat-y'
-    border: string
+    border: number
     borderColor: string
-    borderRadius: string
-    margin: string
-    padding: string
+    borderRadius: number
+    margin: number
+    padding: number
     height: string
     width: string
     justifyitems: 'center' | 'left' | 'right'
@@ -98,5 +99,6 @@ export interface Layout {
   pages: Page[]
   nosleep: boolean
   nonav: boolean
-  multi: boolean
+  cols: number
+  rowHeight: number
 }
