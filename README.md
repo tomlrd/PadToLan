@@ -2,7 +2,7 @@
 
 Originally created for Star Citizen, PadToLan is a customizable TouchPad (size, design, ux...) designed for deployment on local area networks (LAN). It provides easy access to any devices connected to the private network, offering a convenient solution for controlling multiple devices seamlessly.
 
-<img src="https://raw.githubusercontent.com/tomlrd/PadToLan/main/screen.png" alt="PadToLan screenshot" width="1200"/>
+<img src="https://raw.githubusercontent.com/tomlrd/PadToLan/main/screen.png" alt="PadToLan screenshot"/>
 
 ## Features
 
