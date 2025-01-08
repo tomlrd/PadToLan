@@ -4,12 +4,15 @@ import { useLayoutStore } from '../store/useLayoutStore'
 import useOptionsStore from '../store/useOptionsStore'
 
 const OptionsPage: React.FC = () => {
-  const { addDefaultLayoutSC } = useLayoutStore()
-  const { addDefaultKeyBindListSC } = useKeyBindStore()
+  const { addDefaultLayoutSC, getLayout } = useLayoutStore()
+  const { addDefaultKeyBindListSC, getKeyBindList } = useKeyBindStore()
   const { options, setOptions } = useOptionsStore()
   const [newIP, setNewIP] = useState('')
   const [port, setPort] = useState(options.port)
   const [multi, setMulti] = useState(options.multi)
+
+  // Check if SC4.0 layout and keybinds already exist
+  const isSC4SetupPresent = !!getKeyBindList('sc4.0.defaultkb') && !!getLayout('sc4.0.defaultl')
 
   const addIP = () => {
     if (newIP) {
@@ -40,8 +43,11 @@ const OptionsPage: React.FC = () => {
   }
 
   const handleResetLayoutandKeybinds = () => {
-    addDefaultKeyBindListSC()
-    addDefaultLayoutSC()
+    if (!isSC4SetupPresent) {
+      addDefaultKeyBindListSC()
+      addDefaultLayoutSC()
+      window.electron.ipcRenderer.invoke('reset-first-run')
+    }
   }
 
   return (
@@ -104,8 +110,19 @@ const OptionsPage: React.FC = () => {
       </div>
 
       <div className="mt-4">
-        <button onClick={handleResetLayoutandKeybinds} className="bg-blue-500 text-white px-4 py-1">
-          Reset StarCitizen 4.0 Layout and Keybinds
+        <h2 className="text-xl font-semibold">Reset</h2>
+        <button
+          onClick={handleResetLayoutandKeybinds}
+          className={`bg-blue-500 text-white px-4 py-1 ${
+            isSC4SetupPresent
+              ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
+              : 'bg-blue-500 text-white hover:bg-blue-600'
+          }`}
+          disabled={isSC4SetupPresent}
+        >
+          {isSC4SetupPresent
+            ? 'SC4.0 Phone layout and StarCitizen4.0 keybinds are already present, please delete both before'
+            : 'Reset StarCitizen 4.0 Layout and Keybinds'}
         </button>
       </div>
 

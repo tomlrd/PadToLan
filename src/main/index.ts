@@ -96,6 +96,13 @@ app.whenReady().then(() => {
     return isFirstRun
   })
 
+  ipcMain.handle('reset-first-run', () => {
+    firstRun.clear()
+    console.log(isFirstRun)
+    app.relaunch()
+    app.exit(0)
+  })
+
   ipcMain.on('start:server', async (_e, layouts, keybinds, options, currentLayout) => {
     await createServer(layouts, keybinds, options, currentLayout)
   })

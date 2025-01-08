@@ -19,6 +19,7 @@ interface LayoutStore {
 
   getSelectedLayout: () => Layout | null
   getAllLayouts: () => Layout[]
+  getLayout: (uid: string) => Layout | undefined
 }
 
 export const useLayoutStore = create<LayoutStore>()(
@@ -65,6 +66,11 @@ export const useLayoutStore = create<LayoutStore>()(
             layout.uid === updatedLayout.uid ? { ...layout, ...updatedLayout } : layout
           )
         }))
+      },
+
+      getLayout: (uid) => {
+        const { layouts } = get()
+        return layouts.find((layout) => layout.uid === uid)
       },
 
       updateLayouts: (updatedLayouts) => {
